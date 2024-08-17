@@ -1,0 +1,123 @@
+﻿@layout CadastroLayout﻿
+@page "/cadastroUsuario/editar/{UsuarioId:int}"
+@page "/cadastroUsuario/novo"
+@using FitnessDiary.Components.Layout
+@using System.Text.RegularExpressions
+@using System.ComponentModel.DataAnnotations
+@inject IUsuarioService usuarioService
+@rendermode InteractiveServer
+
+
+<h3>Registro de Usuarios</h3>
+
+<EditForm Model="@usuario" OnValidSubmit="Salvar">
+    <div class="container">
+        <div class="form-group">
+            <label>E-mail</label>
+            <InputText id="Email" class="form-control" @bind-Value="usuario.Email" />
+        </div>
+
+        <div class="form-group">
+            <label>Senha</label>
+            <InputText id="Senha" class="form-control" @bind-Value="usuario.Senha" />
+        </div>
+
+        <div class="form-group">
+            <label>Primeiro nome</label>
+            <InputText id="Nome" class="form-control" @bind-Value="usuario.PrimeiroNome" />
+        </div>
+
+        <div class="form-group">
+            <label>Nome do meio</label>
+            <InputText id="nomeDoMeio" class="form-control" @bind-Value="usuario.NomeDoMeio" />
+        </div>
+
+        <div class="form-group">
+            <label>Data de Nascimento</label>
+            <InputDate id="DtaNascimento" class="form-control" @bind-Value="usuario.DtaNascimento" />
+        </div>
+
+        <div class="form-group">
+            <label>Peso</label>
+            <InputNumber id="peso" class="form-control" @bind-Value="usuario.Peso" />
+        </div>
+
+        <div class="form-group">
+            <label>Altura</label>
+            <InputNumber id="altura" class="form-control" @bind-Value="usuario.Altura" />
+        </div>
+
+        <div>
+            <button type="submit" class="btn btn-primary"> Salvar</button>
+        </div>
+
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int UsuarioId { get; set; }
+    private string repetirSenha = "";
+    private Usuario usuario = new Usuario();
+
+    private bool ValidarForm()
+    {
+        List<string> erros = new List<string>();
+        erros.AddRange(PasswordStrength(usuario.Senha));
+        erros.Add(PasswordMatch(repetirSenha));
+
+
+        if(erros.Count > 0)
+        {
+            //Snackbar.Add(string.Join(',', erros), Severity.Error);
+            return false;
+        }
+
+        return true;
+    }
+
+    private List<string> PasswordStrength(string pw)
+    {
+        List<string> erros = new List<string>();
+
+        if (string.IsNullOrWhiteSpace(pw))
+        {
+            erros.Add("Senha é obrigatória!");
+        }
+        else if (pw.Length < 8)
+            erros.Add("A senha precisa ter ao menos 8 caracteres");
+        else if (!Regex.IsMatch(pw, @"[A-Z]"))
+            erros.Add("A senha deve ter pelo menos uma letra maiuscula");
+        else if (!Regex.IsMatch(pw, @"[a-z]"))
+            erros.Add("A senha deve ter pelo menos uma letra minuscula");
+        else if (!Regex.IsMatch(pw, @"[0-9]"))
+            erros.Add("A senha deve ter pelo menos um número");
+
+        return erros;
+    }
+
+    private string PasswordMatch(string arg)
+    {
+        if (repetirSenha != arg)
+            return "As senhas não conferem!";
+        return null;
+    }
+
+
+    private async Task Salvar()
+    {
+        if (ValidarForm())
+        {
+            if (UsuarioId == 0)
+            {
+                await usuarioService.AddUsuarioAsync(usuario);
+
+            }
+            else
+            {
+                await usuarioService.UpdateUsuarioAsync(usuario);
+            }
+        }
+    }
+
+}
