@@ -18,4 +18,34 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\css\bootstrap.css" />
+    <None Include="wwwroot\css\responsive.css" />
+    <None Include="wwwroot\css\style.css" />
+    <None Include="wwwroot\css\style.css.map" />
+    <None Include="wwwroot\css\style.scss" />
+    <None Include="wwwroot\images\contact-img.jpg" />
+    <None Include="wwwroot\images\envelope-white.png" />
+    <None Include="wwwroot\images\facebook-logo.png" />
+    <None Include="wwwroot\images\healthy-bg.jpg" />
+    <None Include="wwwroot\images\hero-bg.jpg" />
+    <None Include="wwwroot\images\instagram-logo.png" />
+    <None Include="wwwroot\images\location-white.png" />
+    <None Include="wwwroot\images\menu.png" />
+    <None Include="wwwroot\images\search-icon.png" />
+    <None Include="wwwroot\images\t1.jpg" />
+    <None Include="wwwroot\images\t2.jpg" />
+    <None Include="wwwroot\images\t3.jpg" />
+    <None Include="wwwroot\images\telephone-white.png" />
+    <None Include="wwwroot\images\trainer-bg.jpg" />
+    <None Include="wwwroot\images\twitter.png" />
+    <None Include="wwwroot\images\u-1.png" />
+    <None Include="wwwroot\images\u-2.png" />
+    <None Include="wwwroot\images\u-3.png" />
+    <None Include="wwwroot\images\u-4.png" />
+    <None Include="wwwroot\images\us-bg.jpg" />
+    <None Include="wwwroot\js\bootstrap.js" />
+    <None Include="wwwroot\js\jquery-3.4.1.min.js" />
+  </ItemGroup>
+
 </Project>
