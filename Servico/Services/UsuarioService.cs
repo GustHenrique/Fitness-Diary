@@ -24,6 +24,7 @@ namespace FitnessDiary.Servico.Implementacoes
         }
         public async Task AddUsuarioAsync(Usuario produto)
         {
+
             _context.Usuario.Add(produto);
             await _context.SaveChangesAsync();
         }
