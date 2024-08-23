@@ -13,12 +13,10 @@ namespace FitnessDiary.Entidades
         public string Nome { get; set; }
 
         [Required]
-        [StringLength(100)]
-        public string Repeticoes { get; set; }
+        public int Repeticoes { get; set; }
 
         [Required]
-        [StringLength(100)]
-        public string Series { get; set; }
+        public int Series { get; set; }
 
         public double Peso { get; set; }
         public double CaloriasQueimadasPorRepeticao { get; set; }

@@ -228,7 +228,7 @@
                     </div>
                 </EditForm>
 
-                <AdicionarExercicioModal Visible="isModalVisible" NovoExercicio="novoExercicio" OnClose="CancelarExercicio" OnSave="SalvarExercicio" />
+                <AdicionarExercicioModal Visible="isModalVisible" NovoExercicio="novoExercicio" Treino="novoTreino" OnClose="CancelarExercicio" OnSave="SalvarExercicio" />
             </div>
         </div>
     </div>
@@ -267,13 +267,25 @@
     {
         if (novoExercicio != null)
         {
-            if (novoTreino.Exercicios.All(e => e.IdTreino != novoExercicio.IdTreino)) // Checar se já não está adicionado
+            var exercicioExistente = novoTreino.Exercicios
+                .FirstOrDefault(e => e.IdExercicio == novoExercicio.IdExercicio);
+
+            if (novoExercicio.IdExercicio == 0)
+            {
+                novoTreino.Exercicios.Add(novoExercicio);
+            }
+            else if (exercicioExistente != null)
+            {
+                exercicioExistente = novoExercicio;
+            }
+            else
             {
                 novoTreino.Exercicios.Add(novoExercicio);
             }
         }
         FecharModal();
     }
+
 
     private void CancelarExercicio()
     {
@@ -310,8 +322,6 @@
 
     private Task<Treino> ObterTreinoPorId(int id)
     {
-        // Implementar lógica para obter o treino pelo ID
-        // Exemplo: return treinoService.ObterTreinoPorId(id);
         return Task.FromResult(new Treino { IdTreino = id, Nome = "Treino Exemplo", Duracao = "30", Exercicios = new List<Exercicio>() });
     }
 

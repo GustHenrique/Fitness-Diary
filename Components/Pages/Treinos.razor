@@ -1,13 +1,13 @@
 ﻿@page "/treinos"
 @inject IUsuarioService clienteService
 @inject NavigationManager navegacao
+@inject ITreinoService treinoService
+@inject ILocalStorageService localStorage
 @rendermode InteractiveServer
 
 <div class="container">
     <div class="heading_container">
-        <h2>
-            Meus Treinos
-        </h2>
+        <h2>Meus Treinos</h2>
     </div>
     <div class="row">
         <div class="container">
@@ -26,10 +26,10 @@
                                     <strong>@treino.Nome</strong> <br />
                                     <small>Categoria: @treino.Categoria?.Nome</small> <br />
                                     <small>Duração: @treino.Duracao minutos</small> <br />
-                                    <small>Calorias Queimadas: @treino.CaloriasQueimadas</small>
+                                    <small>Calorias Queimadas: @CalcularCaloriasTotais(treino) Calorias</small>
                                 </div>
-                                <button class="btn btn-link" @onclick="(() => ToggleExercicios(treino.IdTreino))">
-                                    @if (treino.ExibirExercicios)
+                                <button class="btn btn-link" @onclick="() => ToggleExercicios(treino.IdTreino)">
+                                    @if (exibirExercicios.ContainsKey(treino.IdTreino) && exibirExercicios[treino.IdTreino])
                                     {
                                         <span>Esconder Exercícios</span>
                                     }
@@ -40,7 +40,7 @@
                                 </button>
                             </div>
 
-                            @if (treino.ExibirExercicios)
+                            @if (exibirExercicios.ContainsKey(treino.IdTreino) && exibirExercicios[treino.IdTreino])
                             {
                                 <div class="mt-2">
                                     @if (treino.Exercicios == null || treino.Exercicios.Count == 0)
@@ -73,95 +73,35 @@
 </div>
 
 @code {
-    private List<TreinoViewModel> treinos;
+    public int IdUsuario { get; set; }
+    private List<Treino> treinos = new List<Treino>();
+    private Dictionary<int, bool> exibirExercicios = new Dictionary<int, bool>();
 
     protected override async Task OnInitializedAsync()
     {
-        // Carregar treinos do banco de dados ou serviço
+        IdUsuario = await localStorage.GetItemAsync<int>("IdUsuario");
         treinos = await ObterTreinos();
     }
 
     private void ToggleExercicios(int idTreino)
     {
-        var treino = treinos.FirstOrDefault(t => t.IdTreino == idTreino);
-        if (treino != null)
+        if (exibirExercicios.ContainsKey(idTreino))
         {
-            treino.ExibirExercicios = !treino.ExibirExercicios;
+            exibirExercicios[idTreino] = !exibirExercicios[idTreino];
+        }
+        else
+        {
+            exibirExercicios[idTreino] = true;
         }
     }
 
-    private Task<List<TreinoViewModel>> ObterTreinos()
+    private double CalcularCaloriasTotais(Treino treino)
     {
-        // Implementar lógica para obter treinos e seus exercícios do banco de dados
-        return Task.FromResult(new List<TreinoViewModel>
-        {
-            new TreinoViewModel
-            {
-                IdTreino = 1,
-                Nome = "Treino de Força",
-                Duracao = "60",
-                CaloriasQueimadas = 500,
-                Categoria = new CategoriaExercicio { Nome = "Força" },
-                Exercicios = new List<ExercicioViewModel>
-                {
-                    new ExercicioViewModel
-                    {
-                        Nome = "Supino Reto",
-                        Repeticoes = "10",
-                        Series = "3",
-                        Peso = 80,
-                        GrupoMuscular = new GrupoMuscular { Nome = "Peito" }
-                    },
-                    new ExercicioViewModel
-                    {
-                        Nome = "Rosca Direta",
-                        Repeticoes = "12",
-                        Series = "3",
-                        Peso = 40,
-                        GrupoMuscular = new GrupoMuscular { Nome = "Bíceps" }
-                    }
-                }
-            },
-            new TreinoViewModel
-            {
-                IdTreino = 2,
-                Nome = "Treino Cardio",
-                Duracao = "45",
-                CaloriasQueimadas = 400,
-                Categoria = new CategoriaExercicio { Nome = "Cardio" },
-                Exercicios = new List<ExercicioViewModel>
-                {
-                    new ExercicioViewModel
-                    {
-                        Nome = "Corrida",
-                        Repeticoes = "N/A",
-                        Series = "N/A",
-                        Peso = 0,
-                        GrupoMuscular = new GrupoMuscular { Nome = "Cardiovascular" }
-                    }
-                }
-            }
-        });
+        return treino.Exercicios?.Sum(e => e.CaloriasQueimadasPorRepeticao * e.Repeticoes) ?? 0;
     }
 
-    private class TreinoViewModel
+    private async Task<List<Treino>> ObterTreinos()
     {
-        public int IdTreino { get; set; }
-        public string Nome { get; set; }
-        public string Duracao { get; set; }
-        public double CaloriasQueimadas { get; set; }
-        public CategoriaExercicio Categoria { get; set; }
-        public List<ExercicioViewModel> Exercicios { get; set; }
-        public bool ExibirExercicios { get; set; } = false;
+        return await treinoService.GetTreinosByUsuarioIdAsync(IdUsuario);
     }
-
-    private class ExercicioViewModel
-    {
-        public string Nome { get; set; }
-        public string Repeticoes { get; set; }
-        public string Series { get; set; }
-        public double Peso { get; set; }
-        public GrupoMuscular GrupoMuscular { get; set; }
-    }
-}
 }
