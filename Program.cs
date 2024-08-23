@@ -1,3 +1,7 @@
+using Blazored.LocalStorage;
+using Blazorise;
+using Blazorise.Bootstrap;
+using Blazorise.Icons.FontAwesome;
 using FitnessDiary.Components;
 using FitnessDiary.Data.Context;
 using FitnessDiary.Servico.Implementacoes;
@@ -11,8 +15,23 @@ builder.Services.AddDbContext<SQLServerContext>(options =>
 });
 
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<ITreinoService, TreinoService>();
+builder.Services.AddScoped<IGrupoMuscularService, GrupoMuscularService>();
+builder.Services.AddScoped<IExercicioService, ExercicioService>();
+builder.Services.AddScoped<ICategoriaExercicioService, CategoriaExercicioService>();
 
 // Add services to the container.
+builder.Services.AddBlazoredLocalStorage();
+
+builder.Services
+    .AddBlazorise(options =>
+    {
+        options.Immediate = true;
+    })
+    .AddBootstrapProviders()
+    .AddFontAwesomeIcons();
+
+
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 

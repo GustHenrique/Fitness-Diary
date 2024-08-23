@@ -4,13 +4,12 @@ namespace FitnessDiary.Entidades
 {
     public class AutenticacaoInput
     {
-        [Required]
-        [StringLength(256)]
+        [Required(ErrorMessage = "O campo E-mail é obrigatório.")]
+        [EmailAddress(ErrorMessage = "O e-mail fornecido não é válido.")]
         public string Email { get; set; }
 
-        [Required]
-        [StringLength(100)]
+        [Required(ErrorMessage = "O campo Senha é obrigatório.")]
         public string Senha { get; set; }
-
     }
+
 }

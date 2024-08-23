@@ -9,5 +9,6 @@ namespace FitnessDiary.Servico.Implementacoes
         Task AddUsuarioAsync(Usuario usuario);
         Task UpdateUsuarioAsync(Usuario usuario);
         Task DeleteUsuarioAsync(Usuario usuario);
+        Task<Usuario> AuthenticateAsync(string email, string senha);
     }
 }

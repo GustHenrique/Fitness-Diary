@@ -1,0 +1,84 @@
+﻿@using Blazorise
+@inject IGrupoMuscularService gruposMuscularesService
+@rendermode InteractiveServer
+
+@if(Visible){
+<EditForm Model="@NovoExercicio" OnValidSubmit="SalvarExercicio">
+    <div class="form-group">
+        <label for="NomeExercicio">Nome do Exercício</label>
+        <InputText id="NomeExercicio" class="form-control" @bind-Value="NovoExercicio.Nome" />
+    </div>
+
+    <div class="form-group">
+        <label for="Repeticoes">Repetições</label>
+        <InputText id="Repeticoes" class="form-control" @bind-Value="NovoExercicio.Repeticoes" />
+    </div>
+
+    <div class="form-group">
+        <label for="CaloriasQueimadasPorRepeticao">Calorias Queimadas Por Repetição</label>
+        <InputNumber id="CaloriasQueimadasPorRepeticao" class="form-control" @bind-Value="NovoExercicio.CaloriasQueimadasPorRepeticao" />
+    </div>
+
+    <div class="form-group">
+        <label for="Peso">Peso (kg)</label>
+        <InputNumber id="Peso" class="form-control" @bind-Value="NovoExercicio.Peso" />
+    </div>
+
+    <div class="form-group">
+        <label for="GrupoMuscular">Grupo Muscular</label>
+        <InputSelect id="GrupoMuscular" class="form-control" @bind-Value="NovoExercicio.IdGrupoMuscular">
+            <option value="">Selecione...</option>
+            @foreach (var grupo in GruposMusculares)
+            {
+                <option value="@grupo.IdGrupoMuscular">@grupo.Nome</option>
+            }
+        </InputSelect>
+    </div>
+
+    <div class="form-group">
+        <Button Color="Color.Primary" Type="ButtonType.Submit">Salvar</Button>
+        <Button Color="Color.Secondary" @onclick="Cancelar">Cancelar</Button>
+    </div>
+</EditForm>
+}
+@code {
+    [Parameter] public Exercicio NovoExercicio { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter] public EventCallback OnSave { get; set; }
+    [Parameter] public bool Visible { get; set; }
+
+
+    private bool isVisible = true;
+    private List<GrupoMuscular> GruposMusculares = new List<GrupoMuscular>();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            GruposMusculares = await ObterGruposMusculares();
+            StateHasChanged();
+        }
+    }
+
+    private async Task<List<GrupoMuscular>> ObterGruposMusculares()
+    {
+        return await gruposMuscularesService.GetGrupoMuscularAsync();
+    }
+
+    private void SalvarExercicio()
+    {
+        isVisible = false;
+        OnSave.InvokeAsync();
+    }
+
+    private void Cancelar()
+    {
+        isVisible = false;
+        OnClose.InvokeAsync();
+    }
+
+    private void OnModalClosed()
+    {
+        // Optional: Add logic to execute when modal is closed
+    }
+}
