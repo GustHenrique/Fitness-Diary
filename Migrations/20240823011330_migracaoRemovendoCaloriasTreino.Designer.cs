@@ -4,6 +4,7 @@ using FitnessDiary.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitnessDiary.Migrations
 {
     [DbContext(typeof(SQLServerContext))]
-    partial class SQLServerContextModelSnapshot : ModelSnapshot
+    [Migration("20240823011330_migracaoRemovendoCaloriasTreino")]
+    partial class migracaoRemovendoCaloriasTreino
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,33 +41,6 @@ namespace FitnessDiary.Migrations
                     b.HasKey("IdCategoria");
 
                     b.ToTable("CategoriaExercicios");
-
-                    b.HasData(
-                        new
-                        {
-                            IdCategoria = 1,
-                            Nome = "Força"
-                        },
-                        new
-                        {
-                            IdCategoria = 2,
-                            Nome = "Core e Abdominais"
-                        },
-                        new
-                        {
-                            IdCategoria = 3,
-                            Nome = "Exercícios com Peso Corporal"
-                        },
-                        new
-                        {
-                            IdCategoria = 4,
-                            Nome = "Exercícios de Resistência"
-                        },
-                        new
-                        {
-                            IdCategoria = 5,
-                            Nome = "Exercícios para Grupos Musculares Específicos"
-                        });
                 });
 
             modelBuilder.Entity("FitnessDiary.Entidades.Exercicio", b =>
@@ -127,68 +103,6 @@ namespace FitnessDiary.Migrations
                     b.HasKey("IdGrupoMuscular");
 
                     b.ToTable("GruposMusculares");
-
-                    b.HasData(
-                        new
-                        {
-                            IdGrupoMuscular = 1,
-                            Nome = "Peitoral"
-                        },
-                        new
-                        {
-                            IdGrupoMuscular = 2,
-                            Nome = "Dorsal"
-                        },
-                        new
-                        {
-                            IdGrupoMuscular = 3,
-                            Nome = "Ombros"
-                        },
-                        new
-                        {
-                            IdGrupoMuscular = 4,
-                            Nome = "Bíceps"
-                        },
-                        new
-                        {
-                            IdGrupoMuscular = 5,
-                            Nome = "Tríceps"
-                        },
-                        new
-                        {
-                            IdGrupoMuscular = 6,
-                            Nome = "Quadríceps"
-                        },
-                        new
-                        {
-                            IdGrupoMuscular = 7,
-                            Nome = "Isquiotibiais"
-                        },
-                        new
-                        {
-                            IdGrupoMuscular = 8,
-                            Nome = "Glúteos"
-                        },
-                        new
-                        {
-                            IdGrupoMuscular = 9,
-                            Nome = "Panturrilhas"
-                        },
-                        new
-                        {
-                            IdGrupoMuscular = 10,
-                            Nome = "Abdômen"
-                        },
-                        new
-                        {
-                            IdGrupoMuscular = 11,
-                            Nome = "Lombar"
-                        },
-                        new
-                        {
-                            IdGrupoMuscular = 12,
-                            Nome = "Músculos do Core"
-                        });
                 });
 
             modelBuilder.Entity("FitnessDiary.Entidades.Treino", b =>
@@ -201,7 +115,8 @@ namespace FitnessDiary.Migrations
 
                     b.Property<string>("Duracao")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("IdCategoria")
                         .HasColumnType("int");

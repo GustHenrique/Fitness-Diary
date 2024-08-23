@@ -1,5 +1,5 @@
 ﻿@layout CadastroLayout﻿
-@page "/cadastroUsuario/editar/{UsuarioId:int}"
+@page "/cadastroUsuario/editar/{IdUsuario:int}"
 @page "/cadastroUsuario/novo"
 @using FitnessDiary.Components.Layout
 @using System.Text.RegularExpressions
@@ -61,7 +61,7 @@
 
 @code {
     [Parameter]
-    public int UsuarioId { get; set; }
+    public int IdUsuario { get; set; }
     private string repetirSenha = "";
     private Usuario usuario = new Usuario();
 
@@ -113,7 +113,7 @@
     {
         if (ValidarForm())
         {
-            if (UsuarioId == 0)
+            if (IdUsuario == 0)
             {
                 await usuarioService.AddUsuarioAsync(usuario);
 

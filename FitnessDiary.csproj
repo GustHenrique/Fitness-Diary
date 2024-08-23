@@ -7,6 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
+    <PackageReference Include="Blazorise.Bootstrap" Version="1.6.1" />
+    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.6.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8">
       <PrivateAssets>all</PrivateAssets>
@@ -42,6 +45,10 @@
     <None Include="wwwroot\images\us-bg.jpg" />
     <None Include="wwwroot\js\bootstrap.js" />
     <None Include="wwwroot\js\jquery-3.4.1.min.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Entidades\Output\" />
   </ItemGroup>
 
 </Project>

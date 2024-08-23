@@ -1,11 +1,164 @@
-﻿@page "/cadastroTreino"
-@inject IUsuarioService clienteService
+﻿@page "/cadastroTreino/editar/{IdTreino:int}"
+@page "/cadastroTreino/novo"
+@inject ICategoriaExercicioService categoriaExercicioService
+@inject ITreinoService treinoService
 @inject NavigationManager navegacao
+@inject ILocalStorageService localStorage
 @rendermode InteractiveServer
 
 
+<style>
+    .ag-format-container {
+        width: 1142px;
+        margin: 0 auto;
+    }
 
 
+    body {
+        background-color: #000;
+    }
+
+    .ag-courses_box {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: start;
+        -ms-flex-align: start;
+        align-items: flex-start;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+        padding: 0;
+    }
+
+    .ag-courses_item {
+        -ms-flex-preferred-size: calc(33.33333% - 30px);
+        flex-basis: calc(33.33333% - 30px);
+        margin: 0 10px 15px;
+        overflow: hidden;
+        border-radius: 28px;
+    }
+
+    .ag-courses-item_link {
+        display: block;
+        padding: 0px 20px;
+        background-color: #121212;
+        overflow: hidden;
+        position: relative;
+    }
+
+        .ag-courses-item_link:hover,
+        .ag-courses-item_link:hover .ag-courses-item_date {
+            text-decoration: none;
+            color: #FFF;
+        }
+
+            .ag-courses-item_link:hover .ag-courses-item_bg {
+                -webkit-transform: scale(10);
+                -ms-transform: scale(10);
+                transform: scale(10);
+            }
+
+    .ag-courses-item_title {
+        min-height: 30px;
+        margin: 0;
+        overflow: hidden;
+        font-weight: bold;
+        font-size: 30px;
+        color: #FFF;
+        z-index: 2;
+        position: relative;
+    }
+
+    .ag-courses-item_date-box {
+        font-size: 18px;
+        color: #FFF;
+        z-index: 2;
+        position: relative;
+    }
+
+    .ag-courses-item_date {
+        font-weight: bold;
+        color: #f9b234;
+        -webkit-transition: color .5s ease;
+        -o-transition: color .5s ease;
+        transition: color .5s ease
+    }
+
+    .ag-courses-item_bg {
+        height: 128px;
+        width: 128px;
+        background-color: #f9b234;
+        z-index: 1;
+        position: absolute;
+        top: -75px;
+        right: -75px;
+        border-radius: 50%;
+        -webkit-transition: all .5s ease;
+        -o-transition: all .5s ease;
+        transition: all .5s ease;
+    }
+
+    .ag-courses_item:nth-child(2n) .ag-courses-item_bg {
+        background-color: #3ecd5e;
+    }
+
+    .ag-courses_item:nth-child(3n) .ag-courses-item_bg {
+        background-color: #e44002;
+    }
+
+    .ag-courses_item:nth-child(4n) .ag-courses-item_bg {
+        background-color: #952aff;
+    }
+
+    .ag-courses_item:nth-child(5n) .ag-courses-item_bg {
+        background-color: #cd3e94;
+    }
+
+    .ag-courses_item:nth-child(6n) .ag-courses-item_bg {
+        background-color: #4c49ea;
+    }
+
+
+
+    @@media only screen and (max-width: 979px) {
+        .ag-courses_item {
+            -ms-flex-preferred-size: calc(50% - 30px);
+            flex-basis: calc(50% - 30px);
+        }
+
+        .ag-courses-item_title {
+            font-size: 24px;
+        }
+    }
+
+    @@media only screen and (max-width: 767px) {
+        .ag-format-container {
+            width: 96%;
+        }
+    }
+
+    @@media only screen and (max-width: 639px) {
+        .ag-courses_item {
+            -ms-flex-preferred-size: 100%;
+            flex-basis: 100%;
+        }
+
+        .ag-courses-item_title {
+            min-height: 30px;
+            line-height: 1;
+            font-size: 24px;
+        }
+
+        .ag-courses-item_link {
+            padding: 22px 40px;
+        }
+
+        .ag-courses-item_date-box {
+            font-size: 16px;
+        }
+    }
+
+</style>
 
 <div class="container-fluid">
     <div class="row">
@@ -15,32 +168,155 @@
             </div>
         </div>
         <div class="col-lg-5 col-md-6">
+            <div class="heading_container">
+                <h2>
+                    @((IdTreino > 0) ? "Editar Treino" : "Novo Treino")
+                </h2>
+            </div>
             <div class="form_container pr-0 pr-lg-5 mr-0 mr-lg-2">
-                <div class="heading_container">
-                    <h2>
-                        Cadastrar novo treino
-                    </h2>
-                </div>
-                <form action="">
-                    <div>
-                        <input type="text" placeholder="Nome" />
+                <EditForm Model="@novoTreino" OnValidSubmit="SalvarTreino">
+                    <div class="container">
+                        <div class="form-group">
+                            <label for="NomeTreino">Nome do Treino</label>
+                            <InputText id="NomeTreino" class="form-control" @bind-Value="novoTreino.Nome" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="DuracaoTreino">Duração (minutos)</label>
+                            <InputText id="DuracaoTreino" class="form-control" @bind-Value="novoTreino.Duracao" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Categoria">Categoria do Treino</label>
+                            <InputSelect id="Categoria" class="form-control" @bind-Value="novoTreino.IdCategoria">
+                                <option value="">Selecione...</option>
+                                @foreach (var categoria in categorias)
+                                {
+                                    <option value="@categoria.IdCategoria">@categoria.Nome</option>
+                                }
+                            </InputSelect>
+                        </div>
+
+                        <h4>Adicionar Exercícios</h4>
+                        <div>
+                            <Button Color="Color.Secondary" @onclick="() => MostrarModalAdicionarExercicio(new Exercicio())">Adicionar Exercício</Button>
+                        </div>
+
+                        <div class="mt-3">
+                            <div class="row">
+                                @foreach (var exercicio in novoTreino.Exercicios)
+                                {
+                                    <div class="ag-format-container" @onclick="() => MostrarModalAdicionarExercicio(exercicio)">
+                                        <div class="ag-courses_box">
+                                            <div class="ag-courses_item">
+                                                <span class="ag-courses-item_link">
+                                                    <div class="ag-courses-item_bg"></div>
+                                                    <div class="ag-courses-item_title">
+                                                        @exercicio.Nome
+                                                    </div>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <div>
+                            <Button Color="Color.Primary" Type="ButtonType.Submit">@((IdTreino > 0) ? "Atualizar Treino" : "Salvar Treino")</Button>
+                        </div>
                     </div>
-                    <div>
-                        <input type="email" placeholder="Email" />
-                    </div>
-                    <div>
-                        <input type="text" placeholder="senha" />
-                    </div>
-                    <div>
-                        <input type="text" class="message-box" placeholder="Sei lá" />
-                    </div>
-                    <div class="d-flex ">
-                        <button>
-                            Enviar
-                        </button>
-                    </div>
-                </form>
+                </EditForm>
+
+                <AdicionarExercicioModal Visible="isModalVisible" NovoExercicio="novoExercicio" OnClose="CancelarExercicio" OnSave="SalvarExercicio" />
             </div>
         </div>
     </div>
 </div>
+
+@code {
+    [Parameter]
+    public int IdTreino { get; set; }
+    private Treino novoTreino = new Treino { Exercicios = new List<Exercicio>() };
+    private List<CategoriaExercicio> categorias = new List<CategoriaExercicio>();
+    private Exercicio novoExercicio = new Exercicio();
+    private bool isModalVisible = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        categorias = await ObterCategorias();
+
+        if (IdTreino > 0)
+        {
+            novoTreino = await ObterTreinoPorId(IdTreino); // Carregar o treino existente
+        }
+    }
+
+    private void MostrarModalAdicionarExercicio(Exercicio exercicio)
+    {
+        novoExercicio = exercicio;
+        isModalVisible = true;
+    }
+
+    private void FecharModal()
+    {
+        isModalVisible = false;
+    }
+
+    private void SalvarExercicio()
+    {
+        if (novoExercicio != null)
+        {
+            if (novoTreino.Exercicios.All(e => e.IdTreino != novoExercicio.IdTreino)) // Checar se já não está adicionado
+            {
+                novoTreino.Exercicios.Add(novoExercicio);
+            }
+        }
+        FecharModal();
+    }
+
+    private void CancelarExercicio()
+    {
+        novoExercicio = new Exercicio();
+        FecharModal();
+    }
+
+    private void RemoverExercicio(Exercicio exercicio)
+    {
+        novoTreino.Exercicios.Remove(exercicio);
+    }
+
+    private async Task SalvarTreino()
+    {
+        novoTreino.IdUsuario = await localStorage.GetItemAsync<int>("IdUsuario");
+        if (IdTreino > 0)
+        {
+            // Atualizar treino existente
+            await treinoService.UpdateTreinoAsync(novoTreino);
+        }
+        else
+        {
+            // Criar novo treino
+            await treinoService.AddTreinoAsync(novoTreino);
+        }
+
+        navegacao.NavigateTo("/treinos");
+    }
+
+    private async Task<List<CategoriaExercicio>> ObterCategorias()
+    {
+        return await categoriaExercicioService.GetCategoriaExercicioAsync();
+    }
+
+    private Task<Treino> ObterTreinoPorId(int id)
+    {
+        // Implementar lógica para obter o treino pelo ID
+        // Exemplo: return treinoService.ObterTreinoPorId(id);
+        return Task.FromResult(new Treino { IdTreino = id, Nome = "Treino Exemplo", Duracao = "30", Exercicios = new List<Exercicio>() });
+    }
+
+    private void OnModalClosed()
+    {
+        // Optional: Add logic to execute when modal is closed
+    }
+}

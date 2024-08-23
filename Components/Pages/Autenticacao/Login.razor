@@ -1,61 +1,77 @@
-﻿@layout AutenticaLayout﻿
-@page "/login"
+﻿@page "/login"
 @page "/"
+@layout AutenticaLayout
 @inject NavigationManager navegacao
-@using FitnessDiary.Components.Layout
+@inject ILocalStorageService LocalStorage
+@inject IUsuarioService usuarioService
+@rendermode InteractiveServer
 
-<h3>Login de Usuarios</h3>
+<h3>Login de Usuários</h3>
 
 <EditForm Model="@auth" OnValidSubmit="Logar">
     <div class="container">
         <div class="form-group">
-            <label>E-mail</label>
+            <label for="Email">E-mail</label>
             <InputText id="Email" class="form-control" @bind-Value="auth.Email" />
         </div>
 
         <div class="form-group">
-            <label>Senha</label>
-            <InputText id="Senha" class="form-control" @bind-Value="auth.Senha" />
+            <label for="Senha">Senha</label>
+            <InputText id="Senha" type="password" class="form-control" @bind-Value="auth.Senha" />
         </div>
 
         <div>
-            <button type="submit" class="btn btn-primary"> Salvar</button>
+            <button type="submit" class="btn btn-primary">Entrar</button>
         </div>
 
-        <div class="form-group">
-            <a href="/cadastroUsuario/novo">
-                <label>Não possui uma conta ainda ? Clique aqui para se registrar!</label>
-            </a>
+        <div class="form-group mt-2">
+            <a href="/cadastroUsuario/novo">Não possui uma conta ainda? Clique aqui para se registrar!</a>
         </div>
-
     </div>
 </EditForm>
 
-@code{
+@code {
     AutenticacaoInput auth = new AutenticacaoInput();
-
-
+    private bool loginFailed = false;
 
     private async Task Logar()
     {
         if (ValidarForm())
         {
-
-            navegacao.NavigateTo("/home");
+            var usuario = await usuarioService.AuthenticateAsync(auth.Email, auth.Senha);
+            if (usuario != null)
+            {
+                await LocalStorage.SetItemAsync("IdUsuario", usuario.IdUsuario);
+                loginFailed = false;
+                navegacao.NavigateTo("/home");
+            }
+            else
+            {
+                // Falha na autenticação
+                loginFailed = true;
+            }
         }
     }
-
 
     private bool ValidarForm()
     {
         List<string> erros = new List<string>();
+
+        if (string.IsNullOrWhiteSpace(auth.Email))
+        {
+            erros.Add("O campo E-mail é obrigatório.");
+        }
+
+        if (string.IsNullOrWhiteSpace(auth.Senha))
+        {
+            erros.Add("O campo Senha é obrigatório.");
+        }
+
         if (erros.Count > 0)
         {
-            //Snackbar.Add(string.Join(',', erros), Severity.Error);
             return false;
         }
 
         return true;
     }
-
 }

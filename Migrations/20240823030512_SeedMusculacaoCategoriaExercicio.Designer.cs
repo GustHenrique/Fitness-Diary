@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitnessDiary.Migrations
 {
     [DbContext(typeof(SQLServerContext))]
-    [Migration("20240821023504_exercicioTreinos")]
-    partial class exercicioTreinos
+    [Migration("20240823030512_SeedMusculacaoCategoriaExercicio")]
+    partial class SeedMusculacaoCategoriaExercicio
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,7 +40,34 @@ namespace FitnessDiary.Migrations
 
                     b.HasKey("IdCategoria");
 
-                    b.ToTable("CategoriaExercicio");
+                    b.ToTable("CategoriaExercicios");
+
+                    b.HasData(
+                        new
+                        {
+                            IdCategoria = 1,
+                            Nome = "Força"
+                        },
+                        new
+                        {
+                            IdCategoria = 2,
+                            Nome = "Core e Abdominais"
+                        },
+                        new
+                        {
+                            IdCategoria = 3,
+                            Nome = "Exercícios com Peso Corporal"
+                        },
+                        new
+                        {
+                            IdCategoria = 4,
+                            Nome = "Exercícios de Resistência"
+                        },
+                        new
+                        {
+                            IdCategoria = 5,
+                            Nome = "Exercícios para Grupos Musculares Específicos"
+                        });
                 });
 
             modelBuilder.Entity("FitnessDiary.Entidades.Exercicio", b =>
@@ -50,6 +77,9 @@ namespace FitnessDiary.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdExercicio"));
+
+                    b.Property<double>("CaloriasQueimadasPorRepeticao")
+                        .HasColumnType("float");
 
                     b.Property<int>("IdGrupoMuscular")
                         .HasColumnType("int");
@@ -81,7 +111,7 @@ namespace FitnessDiary.Migrations
 
                     b.HasIndex("IdTreino");
 
-                    b.ToTable("Exercicio");
+                    b.ToTable("Exercicios");
                 });
 
             modelBuilder.Entity("FitnessDiary.Entidades.GrupoMuscular", b =>
@@ -99,7 +129,7 @@ namespace FitnessDiary.Migrations
 
                     b.HasKey("IdGrupoMuscular");
 
-                    b.ToTable("GrupoMuscular");
+                    b.ToTable("GruposMusculares");
                 });
 
             modelBuilder.Entity("FitnessDiary.Entidades.Treino", b =>
@@ -110,15 +140,14 @@ namespace FitnessDiary.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdTreino"));
 
-                    b.Property<double>("CaloriasQueimadas")
-                        .HasColumnType("float");
-
                     b.Property<string>("Duracao")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("IdCategoria")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdUsuario")
                         .HasColumnType("int");
 
                     b.Property<string>("Nome")
@@ -130,7 +159,9 @@ namespace FitnessDiary.Migrations
 
                     b.HasIndex("IdCategoria");
 
-                    b.ToTable("Treino");
+                    b.HasIndex("IdUsuario");
+
+                    b.ToTable("Treinos");
                 });
 
             modelBuilder.Entity("FitnessDiary.Entidades.Usuario", b =>
@@ -180,7 +211,7 @@ namespace FitnessDiary.Migrations
 
                     b.HasKey("IdUsuario");
 
-                    b.ToTable("Usuario");
+                    b.ToTable("Usuarios");
                 });
 
             modelBuilder.Entity("FitnessDiary.Entidades.Exercicio", b =>
@@ -210,7 +241,15 @@ namespace FitnessDiary.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("FitnessDiary.Entidades.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("IdUsuario")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Categoria");
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("FitnessDiary.Entidades.CategoriaExercicio", b =>

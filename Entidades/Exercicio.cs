@@ -21,6 +21,7 @@ namespace FitnessDiary.Entidades
         public string Series { get; set; }
 
         public double Peso { get; set; }
+        public double CaloriasQueimadasPorRepeticao { get; set; }
 
         // Relação com a classe Treino
         public int IdTreino { get; set; }

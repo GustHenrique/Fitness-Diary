@@ -15,29 +15,44 @@ namespace FitnessDiary.Servico.Implementacoes
 
         public async Task<Usuario> GetUsuarioByIdAsync(int produtoId)
         {
-            return await _context.Usuario.FindAsync(produtoId);
+            return await _context.Usuarios.FindAsync(produtoId);
         }
 
         public async Task<List<Usuario>> GetUsuarioAsync()
         {
-            return await _context.Usuario.ToListAsync();
+            return await _context.Usuarios.ToListAsync();
         }
         public async Task AddUsuarioAsync(Usuario produto)
         {
-            _context.Usuario.Add(produto);
+            _context.Usuarios.Add(produto);
             await _context.SaveChangesAsync();
         }
 
         public async Task DeleteUsuarioAsync(Usuario produto)
         {
-            _context.Usuario.Remove(produto);
+            _context.Usuarios.Remove(produto);
             await _context.SaveChangesAsync();
         }
 
         public async Task UpdateUsuarioAsync(Usuario produto)
         {
-            _context.Usuario.Update(produto);
+            _context.Usuarios.Update(produto);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<Usuario> AuthenticateAsync(string email, string senha)
+        {
+            // Verifica se um usuário com o email fornecido existe
+            var usuario = await _context.Usuarios
+                .SingleOrDefaultAsync(u => u.Email == email);
+
+            // Se não encontrar o usuário ou a senha não corresponder, retorna nulo
+            if (usuario == null || usuario.Senha != senha)
+            {
+                return null;
+            }
+
+            return usuario;
         }
     }
 }

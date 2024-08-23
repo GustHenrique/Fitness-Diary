@@ -6,13 +6,13 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FitnessDiary.Migrations
 {
     /// <inheritdoc />
-    public partial class exercicioTreinos : Migration
+    public partial class migracaoRemovendoCaloriasTreino : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "CategoriaExercicio",
+                name: "CategoriaExercicios",
                 columns: table => new
                 {
                     IdCategoria = table.Column<int>(type: "int", nullable: false)
@@ -21,11 +21,11 @@ namespace FitnessDiary.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CategoriaExercicio", x => x.IdCategoria);
+                    table.PrimaryKey("PK_CategoriaExercicios", x => x.IdCategoria);
                 });
 
             migrationBuilder.CreateTable(
-                name: "GrupoMuscular",
+                name: "GruposMusculares",
                 columns: table => new
                 {
                     IdGrupoMuscular = table.Column<int>(type: "int", nullable: false)
@@ -34,11 +34,11 @@ namespace FitnessDiary.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GrupoMuscular", x => x.IdGrupoMuscular);
+                    table.PrimaryKey("PK_GruposMusculares", x => x.IdGrupoMuscular);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Usuario",
+                name: "Usuarios",
                 columns: table => new
                 {
                     IdUsuario = table.Column<int>(type: "int", nullable: false)
@@ -55,33 +55,39 @@ namespace FitnessDiary.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Usuario", x => x.IdUsuario);
+                    table.PrimaryKey("PK_Usuarios", x => x.IdUsuario);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Treino",
+                name: "Treinos",
                 columns: table => new
                 {
                     IdTreino = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    IdUsuario = table.Column<int>(type: "int", nullable: false),
                     Nome = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     Duracao = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    CaloriasQueimadas = table.Column<double>(type: "float", nullable: false),
                     IdCategoria = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Treino", x => x.IdTreino);
+                    table.PrimaryKey("PK_Treinos", x => x.IdTreino);
                     table.ForeignKey(
-                        name: "FK_Treino_CategoriaExercicio_IdCategoria",
+                        name: "FK_Treinos_CategoriaExercicios_IdCategoria",
                         column: x => x.IdCategoria,
-                        principalTable: "CategoriaExercicio",
+                        principalTable: "CategoriaExercicios",
                         principalColumn: "IdCategoria",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Treinos_Usuarios_IdUsuario",
+                        column: x => x.IdUsuario,
+                        principalTable: "Usuarios",
+                        principalColumn: "IdUsuario",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Exercicio",
+                name: "Exercicios",
                 columns: table => new
                 {
                     IdExercicio = table.Column<int>(type: "int", nullable: false)
@@ -90,59 +96,65 @@ namespace FitnessDiary.Migrations
                     Repeticoes = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Series = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Peso = table.Column<double>(type: "float", nullable: false),
+                    CaloriasQueimadasPorRepeticao = table.Column<double>(type: "float", nullable: false),
                     IdTreino = table.Column<int>(type: "int", nullable: false),
                     IdGrupoMuscular = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Exercicio", x => x.IdExercicio);
+                    table.PrimaryKey("PK_Exercicios", x => x.IdExercicio);
                     table.ForeignKey(
-                        name: "FK_Exercicio_GrupoMuscular_IdGrupoMuscular",
+                        name: "FK_Exercicios_GruposMusculares_IdGrupoMuscular",
                         column: x => x.IdGrupoMuscular,
-                        principalTable: "GrupoMuscular",
+                        principalTable: "GruposMusculares",
                         principalColumn: "IdGrupoMuscular",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Exercicio_Treino_IdTreino",
+                        name: "FK_Exercicios_Treinos_IdTreino",
                         column: x => x.IdTreino,
-                        principalTable: "Treino",
+                        principalTable: "Treinos",
                         principalColumn: "IdTreino",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Exercicio_IdGrupoMuscular",
-                table: "Exercicio",
+                name: "IX_Exercicios_IdGrupoMuscular",
+                table: "Exercicios",
                 column: "IdGrupoMuscular");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Exercicio_IdTreino",
-                table: "Exercicio",
+                name: "IX_Exercicios_IdTreino",
+                table: "Exercicios",
                 column: "IdTreino");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Treino_IdCategoria",
-                table: "Treino",
+                name: "IX_Treinos_IdCategoria",
+                table: "Treinos",
                 column: "IdCategoria");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Treinos_IdUsuario",
+                table: "Treinos",
+                column: "IdUsuario");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Exercicio");
+                name: "Exercicios");
 
             migrationBuilder.DropTable(
-                name: "Usuario");
+                name: "GruposMusculares");
 
             migrationBuilder.DropTable(
-                name: "GrupoMuscular");
+                name: "Treinos");
 
             migrationBuilder.DropTable(
-                name: "Treino");
+                name: "CategoriaExercicios");
 
             migrationBuilder.DropTable(
-                name: "CategoriaExercicio");
+                name: "Usuarios");
         }
     }
 }
