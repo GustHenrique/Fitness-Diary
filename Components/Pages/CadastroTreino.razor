@@ -162,6 +162,10 @@
 
 </style>
 
+
+<Loading IsLoading="isLoading" />
+
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-6 px-0">
@@ -243,6 +247,7 @@
     private List<CategoriaExercicio> categorias = new List<CategoriaExercicio>();
     private Exercicio novoExercicio = new Exercicio();
     private bool isModalVisible = false;
+    private bool isLoading = false;
 
     protected override async Task OnInitializedAsync()
     {
