@@ -1,6 +1,7 @@
 ﻿@page "/perfil"
 @inject IUsuarioService usuarioService
 @inject ILocalStorageService localStorage
+@inject NavigationManager navegacao
 @rendermode InteractiveServer
 
 
@@ -52,6 +53,11 @@
     {
         if (firstRender)
         {
+            if (await localStorage.GetItemAsync<int>("IdUsuario") == null || await localStorage.GetItemAsync<int>("IdUsuario") == 0)
+            {
+                navegacao.NavigateTo($"/");
+            }
+
             isLoading = true;
             StateHasChanged();
 
