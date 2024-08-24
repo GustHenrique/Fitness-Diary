@@ -3,6 +3,7 @@
 @inject NavigationManager navegacao
 @inject ITreinoService treinoService
 @inject ILocalStorageService localStorage
+@inject SweetAlertService Swal
 @rendermode InteractiveServer
 
 
@@ -44,6 +45,9 @@
                                     </button>
                                     <button class="btn btn-link d-flex align-items-center" @onclick="() => EditarTreino(treino)">
                                         <span class="ms-2">Editar</span>
+                                    </button>
+                                    <button class="btn btn-link d-flex align-items-center" @onclick="() => ExcluirTreino(treino)">
+                                        <span class="ms-2">Excluir</span>
                                     </button>
                                 </div>
                             </div>
@@ -91,6 +95,11 @@
     {
         if (firstRender)
         {
+            if (await localStorage.GetItemAsync<int>("IdUsuario") == null || await localStorage.GetItemAsync<int>("IdUsuario") == 0)
+            {
+                navegacao.NavigateTo($"/");
+            }
+
             isLoading = true;
             StateHasChanged();
 
@@ -101,12 +110,33 @@
             StateHasChanged();
         }
     }
-    
+
     private void EditarTreino(Treino treino)
     {
         if (treino is not null)
         {
-            navegacao.NavigateTo($"/cadastroTreino/editar/{treino.IdTreino}");
+            navegacao.NavigateTo($"/cadastroTreino/editar/{treino.IdTreino}", true);
+        }
+    }
+
+    private async void ExcluirTreino(Treino treino)
+    {
+        if (treino is not null)
+        {
+            var result = await Swal.FireAsync(new SweetAlertOptions
+                {
+                    Title = "Excluir Treino",
+                    Text = $"Deseja mesmo excluir o treino {treino.Nome} ? O processo é irreversível!",
+                    Icon = SweetAlertIcon.Error,
+                    ConfirmButtonText = "Excluir treino!",
+                });
+
+            if (result.IsConfirmed)
+            {
+                await treinoService.DeleteTreinoAsync(treino);
+                treinos = await ObterTreinos();
+                StateHasChanged();
+            }
         }
     }
 

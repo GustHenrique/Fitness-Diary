@@ -258,6 +258,11 @@
     {
         if (firstRender)
         {
+            if (await localStorage.GetItemAsync<int>("IdUsuario") == null || await localStorage.GetItemAsync<int>("IdUsuario") == 0)
+            {
+                navegacao.NavigateTo($"/");
+            }
+
             if (IdTreino > 0)
             {
                 novoTreino = await ObterTreinoPorId(IdTreino);

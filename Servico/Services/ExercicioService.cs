@@ -16,7 +16,10 @@ namespace FitnessDiary.Servico.Implementacoes
         public async Task<List<Exercicio>> GetExerciciosByTreinoIdAsync(int treinoId)
         {
             return await _context.Exercicios
-                                 .Where(t => t.IdTreino == treinoId)
+                                 .Where(e => e.IdTreino == treinoId)
+                                 .Include(e => e.GrupoMuscular)
+                                 .Include(e => e.Treino) // Inclui o Treino relacionado
+                                 .ThenInclude(t => t.Categoria) // Inclui a Categoria do Treino, se necessário
                                  .ToListAsync();
         }
 

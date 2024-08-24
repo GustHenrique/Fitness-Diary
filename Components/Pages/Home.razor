@@ -1,6 +1,7 @@
 ﻿@page "/home"
 @inject IUsuarioService clienteService
 @inject NavigationManager navegacao
+@inject ILocalStorageService localStorage
 @rendermode InteractiveServer
 
 
@@ -40,6 +41,18 @@
 
 @code {
     private int currentIndex = 0;
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (await localStorage.GetItemAsync<int>("IdUsuario") == null || await localStorage.GetItemAsync<int>("IdUsuario") == 0)
+            {
+                navegacao.NavigateTo($"/");
+            }
+        }
+    }
 
     private List<CarouselItem> Items = new List<CarouselItem>
     {
