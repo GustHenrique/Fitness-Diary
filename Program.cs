@@ -2,6 +2,7 @@ using Blazored.LocalStorage;
 using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
+using CurrieTechnologies.Razor.SweetAlert2;
 using FitnessDiary.Components;
 using FitnessDiary.Data.Context;
 using FitnessDiary.Servico.Implementacoes;
@@ -14,6 +15,7 @@ builder.Services.AddDbContext<SQLServerContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+builder.Services.AddSweetAlert2();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<ITreinoService, TreinoService>();
 builder.Services.AddScoped<IGrupoMuscularService, GrupoMuscularService>();

@@ -12,7 +12,10 @@ namespace FitnessDiary.Entidades
         [StringLength(256)]
         public string Nome { get; set; }
 
+        [Required]
         public int Repeticoes { get; set; }
+
+        [Required]
         public int Series { get; set; }
         public double Peso { get; set; }
         public double CaloriasQueimadasPorSeries { get; set; }

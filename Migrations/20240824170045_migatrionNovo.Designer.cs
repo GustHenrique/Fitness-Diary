@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitnessDiary.Migrations
 {
     [DbContext(typeof(SQLServerContext))]
-    [Migration("20240824133310_atualizacaoFaculade")]
-    partial class atualizacaoFaculade
+    [Migration("20240824170045_migatrionNovo")]
+    partial class migatrionNovo
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -198,9 +198,8 @@ namespace FitnessDiary.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdTreino"));
 
-                    b.Property<string>("Duracao")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Duracao")
+                        .HasColumnType("int");
 
                     b.Property<int>("IdCategoria")
                         .HasColumnType("int");
@@ -241,26 +240,13 @@ namespace FitnessDiary.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<string>("NomeDoMeio")
+                    b.Property<string>("Nome")
                         .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NomeImagem")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("PathImagem")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
 
                     b.Property<double?>("Peso")
                         .HasColumnType("float");
-
-                    b.Property<string>("PrimeiroNome")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("Senha")
                         .IsRequired()

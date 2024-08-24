@@ -5,6 +5,7 @@
 @inject IExercicioService exercicioService
 @inject NavigationManager navegacao
 @inject ILocalStorageService localStorage
+@inject SweetAlertService Swal
 @rendermode InteractiveServer
 
 
@@ -184,7 +185,7 @@
 
                         <div class="form-group">
                             <label for="DuracaoTreino">Duração (minutos)</label>
-                            <InputText id="DuracaoTreino" class="form-control" @bind-Value="novoTreino.Duracao" />
+                            <InputNumber id="DuracaoTreino" class="form-control" @bind-Value="novoTreino.Duracao" />
                         </div>
 
                         <div class="form-group">
@@ -266,6 +267,7 @@
     {
         novoExercicio = exercicio;
         isModalVisible = true;
+        StateHasChanged();
     }
 
     private void FecharModal()
@@ -310,17 +312,61 @@
 
     private async Task SalvarTreino()
     {
-        novoTreino.IdUsuario = await localStorage.GetItemAsync<int>("IdUsuario");
-        if (IdTreino > 0)
+        if (await ValidarForm())
         {
-            await treinoService.UpdateTreinoAsync(novoTreino);
+            novoTreino.IdUsuario = await localStorage.GetItemAsync<int>("IdUsuario");
+            if (IdTreino > 0)
+            {
+                await treinoService.UpdateTreinoAsync(novoTreino);
+            }
+            else
+            {
+                await treinoService.AddTreinoAsync(novoTreino);
+            }
+
+
+            var result = await Swal.FireAsync(new SweetAlertOptions
+                {
+                    Title = "Cadastrado",
+                    Text = "Treino Cadastrado com sucesso!",
+                    Icon = SweetAlertIcon.Success,
+                    ConfirmButtonText = "Ok, ir para lista de treinos!"
+                });
+
+            if (result.IsConfirmed)
+            {
+                navegacao.NavigateTo("/treinos");
+            }
         }
-        else
+    }
+
+    private async Task<bool> ValidarForm()
+    {
+        List<string> erros = new List<string>();
+
+        if (string.IsNullOrEmpty(novoTreino.Nome))
+            erros.Add("Nome do treino obrigatório!");
+        else if (novoTreino.IdCategoria == 0)
+            erros.Add("Categoria do treino obrigatório!");
+        else if (novoTreino.Duracao == 0)
+            erros.Add("Nome do treino obrigatório!");
+        else if (novoTreino.Exercicios.Count == 0)
+            erros.Add("Pelo menos um exercicio é obrigatório!");
+
+        if (erros.Count > 0)
         {
-            await treinoService.AddTreinoAsync(novoTreino);
+            await Swal.FireAsync(new SweetAlertOptions
+                {
+                    Title = "Erro",
+                    Text = $"Erros: \r\n {string.Join(" \r\n ", erros)}!",
+                    Icon = SweetAlertIcon.Error,
+                    ConfirmButtonText = "Tentar novamente!",
+                });
+
+            return false;
         }
 
-        navegacao.NavigateTo("/treinos");
+        return true;
     }
 
     private async Task<List<CategoriaExercicio>> ObterCategorias()

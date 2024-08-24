@@ -16,7 +16,7 @@ namespace FitnessDiary.Entidades
         public string Nome { get; set; }
 
         [Required]
-        public string Duracao { get; set; }
+        public int Duracao { get; set; }
         public ICollection<Exercicio> Exercicios { get; set; } = new List<Exercicio>();
         public int IdCategoria { get; set; }
         [ForeignKey("IdCategoria")]

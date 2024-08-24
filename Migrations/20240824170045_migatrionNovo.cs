@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FitnessDiary.Migrations
 {
     /// <inheritdoc />
-    public partial class atualizacaoFaculade : Migration
+    public partial class migatrionNovo : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -45,15 +45,12 @@ namespace FitnessDiary.Migrations
                 {
                     IdUsuario = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PrimeiroNome = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    NomeDoMeio = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    Nome = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     Senha = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     DtaNascimento = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Peso = table.Column<double>(type: "float", nullable: true),
-                    Altura = table.Column<double>(type: "float", nullable: true),
-                    PathImagem = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    NomeImagem = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
+                    Altura = table.Column<double>(type: "float", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -68,7 +65,7 @@ namespace FitnessDiary.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IdUsuario = table.Column<int>(type: "int", nullable: false),
                     Nome = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    Duracao = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Duracao = table.Column<int>(type: "int", nullable: false),
                     IdCategoria = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>

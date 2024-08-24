@@ -1,51 +1,72 @@
-﻿@using Blazorise
+﻿@page "/exercicio"
+@using Blazorise
 @inject IGrupoMuscularService gruposMuscularesService
-@rendermode InteractiveServer
+@inject SweetAlertService Swal
 
-@if(Visible){
-<EditForm Model="@NovoExercicio" OnValidSubmit="SalvarExercicio">
-    <div class="form-group">
-        <label for="NomeExercicio">Nome do Exercício</label>
-        <InputText id="NomeExercicio" class="form-control" @bind-Value="NovoExercicio.Nome" />
-    </div>
+<style>
+    .corTexto {
+        color: black;
+    }
 
-    <div class="form-group">
-        <label for="Repeticoes">Repetições</label>
-        <InputNumber id="Repeticoes" class="form-control" @bind-Value="NovoExercicio.Repeticoes" />
-    </div>
+</style>
 
-    <div class="form-group">
-        <label for="Repeticoes">Quantidade de series</label>
-        <InputNumber id="Repeticoes" class="form-control" @bind-Value="NovoExercicio.Series" />
-    </div>
+<div class="modal fade @((Visible ? "show" : ""))" tabindex="-1" role="dialog" style="display:@(Visible ? "block" : "none");">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title corTexto">Adicionar Novo Exercício</h5>
+            </div>
+            <div class="modal-body">
+                <EditForm Model="@NovoExercicio" OnValidSubmit="SalvarExercicio">
+                    <div class="form-group">
+                        <label for="NomeExercicio" class="corTexto">Nome do Exercício</label>
+                        <InputText id="NomeExercicio" class="form-control" @bind-Value="NovoExercicio.Nome" />
+                    </div>
 
-    <div class="form-group">
-        <label for="CaloriasQueimadasPorSeries">Calorias Queimadas Por Repetição</label>
-        <InputNumber id="CaloriasQueimadasPorSeries" class="form-control" @bind-Value="NovoExercicio.CaloriasQueimadasPorSeries" />
-    </div>
+                    <div class="form-group">
+                        <label for="Repeticoes" class="corTexto">Repetições</label>
+                        <InputNumber id="Repeticoes" class="form-control" @bind-Value="NovoExercicio.Repeticoes" />
+                    </div>
 
-    <div class="form-group">
-        <label for="Peso">Peso (kg)</label>
-        <InputNumber id="Peso" class="form-control" @bind-Value="NovoExercicio.Peso" />
-    </div>
+                    <div class="form-group">
+                        <label for="Series" class="corTexto">Quantidade de séries</label>
+                        <InputNumber id="Series" class="form-control" @bind-Value="NovoExercicio.Series" />
+                    </div>
 
-    <div class="form-group">
-        <label for="GrupoMuscular">Grupo Muscular</label>
-        <InputSelect id="GrupoMuscular" class="form-control" @bind-Value="NovoExercicio.IdGrupoMuscular">
-            <option value="">Selecione...</option>
-            @foreach (var grupo in GruposMusculares)
-            {
-                <option value="@grupo.IdGrupoMuscular">@grupo.Nome</option>
-            }
-        </InputSelect>
-    </div>
+                    <div class="form-group">
+                        <label for="CaloriasQueimadasPorSeries" class="corTexto">Calorias Queimadas Por Série</label>
+                        <InputNumber id="CaloriasQueimadasPorSeries" class="form-control" @bind-Value="NovoExercicio.CaloriasQueimadasPorSeries" />
+                    </div>
 
-    <div class="form-group">
-        <Button Color="Color.Primary" Type="ButtonType.Submit">Salvar</Button>
-        <Button Color="Color.Secondary" @onclick="Cancelar">Cancelar</Button>
+                    <div class="form-group">
+                        <label for="Peso" class="corTexto">Peso (kg)</label>
+                        <InputNumber id="Peso" class="form-control" @bind-Value="NovoExercicio.Peso" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="GrupoMuscular" class="corTexto">Grupo Muscular</label>
+                        <InputSelect id="GrupoMuscular" class="form-control" @bind-Value="NovoExercicio.IdGrupoMuscular">
+                            <option value="">Selecione...</option>
+                            @foreach (var grupo in GruposMusculares)
+                            {
+                                <option value="@grupo.IdGrupoMuscular">@grupo.Nome</option>
+                            }
+                        </InputSelect>
+                    </div>
+
+                    <div class="form-group">
+                        <Button Color="Color.Primary" Type="ButtonType.Submit">Salvar</Button>
+                        <Button Color="Color.Secondary" @onclick="Cancelar">Cancelar</Button>
+                    </div>
+                </EditForm>
+            </div>
+            <div class="modal-footer">
+                <Button Color="Color.Secondary" @onclick="Cancelar">Fechar</Button>
+            </div>
+        </div>
     </div>
-</EditForm>
-}
+</div>
+
 @code {
     [Parameter] public Exercicio NovoExercicio { get; set; }
     [Parameter] public EventCallback OnClose { get; set; }
@@ -53,9 +74,6 @@
     [Parameter] public bool Visible { get; set; }
     [Parameter] public Treino Treino { get; set; }
 
-
-
-    private bool isVisible = true;
     private List<GrupoMuscular> GruposMusculares = new List<GrupoMuscular>();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -72,24 +90,49 @@
         return await gruposMuscularesService.GetGrupoMuscularAsync();
     }
 
-    private void SalvarExercicio()
+    private async Task<bool> ValidarForm()
     {
-        isVisible = false;
-        if (NovoExercicio.IdExercicio == 0)
+        List<string> erros = new List<string>();
+
+        if (string.IsNullOrEmpty(NovoExercicio.Nome))
+            erros.Add("Nome do exercicio obrigatório!");
+        else if (NovoExercicio.Repeticoes == 0)
+            erros.Add("Quantidade de repetições do exercicio obrigatório!");
+        else if (NovoExercicio.Series == 0)
+            erros.Add("Quantidade de series do exercicio obrigatório!");
+
+        if (erros.Count > 0)
         {
-            NovoExercicio.IdExercicio = Treino.Exercicios.Count() + 1;
+            await Swal.FireAsync(new SweetAlertOptions
+                {
+                    Title = "Erro",
+                    Text = $"Erros: \r\n {string.Join(" \r\n ", erros)}!",
+                    Icon = SweetAlertIcon.Error,
+                    ConfirmButtonText = "Tentar novamente!",
+                });
+
+            return false;
         }
-        OnSave.InvokeAsync();
+
+        return true;
+    }
+
+    private async void SalvarExercicio()
+    {
+        if (await ValidarForm())
+        {
+            if (NovoExercicio.IdExercicio == 0)
+            {
+                NovoExercicio.IdExercicio = Treino.Exercicios.Count() + 1;
+            }
+            OnSave.InvokeAsync();
+            Visible = false;
+        }
     }
 
     private void Cancelar()
     {
-        isVisible = false;
+        Visible = false;
         OnClose.InvokeAsync();
-    }
-
-    private void OnModalClosed()
-    {
-        // Optional: Add logic to execute when modal is closed
     }
 }
