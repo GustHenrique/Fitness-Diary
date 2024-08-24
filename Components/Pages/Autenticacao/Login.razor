@@ -4,31 +4,49 @@
 @inject NavigationManager navegacao
 @inject ILocalStorageService LocalStorage
 @inject IUsuarioService usuarioService
+@inject SweetAlertService Swal
 @rendermode InteractiveServer
 
-<h3>Login de Usuários</h3>
-
-<EditForm Model="@auth" OnValidSubmit="Logar">
-    <div class="container">
-        <div class="form-group">
-            <label for="Email">E-mail</label>
-            <InputText id="Email" class="form-control" @bind-Value="auth.Email" />
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6 px-0">
+            <div class="img-box">
+                <img src="images/contact-img.jpg" alt="">
+            </div>
         </div>
+        <div class="col-lg-5 col-md-6">
+            <div class="heading_container">
+                    <h3>Login de Usuários</h3>
+            </div>
+            <div class="form_container pr-0 pr-lg-5 mr-0 mr-lg-2">
+                <EditForm Model="@auth" OnValidSubmit="Logar">
+                    <div class="container">
+                        <div class="form-group">
+                            <label for="Email">E-mail</label>
+                            <InputText id="Email" class="form-control" @bind-Value="auth.Email" />
+                        </div>
 
-        <div class="form-group">
-            <label for="Senha">Senha</label>
-            <InputText id="Senha" type="password" class="form-control" @bind-Value="auth.Senha" />
-        </div>
+                        <div class="form-group">
+                            <label for="Senha">Senha</label>
+                            <InputText id="Senha" type="password" class="form-control" @bind-Value="auth.Senha" />
+                        </div>
 
-        <div>
-            <button type="submit" class="btn btn-primary">Entrar</button>
-        </div>
+                        <div>
+                            <button type="submit" class="btn btn-primary">Entrar</button>
+                        </div>
 
-        <div class="form-group mt-2">
-            <a href="/cadastroUsuario/novo">Não possui uma conta ainda? Clique aqui para se registrar!</a>
+                        <div class="form-group mt-2">
+                            <Span @onclick="IrParaCadastro">Não possui uma conta ainda? Clique aqui para se registrar!</Span>
+                        </div>
+                    </div>
+                </EditForm>
+
+            </div>
         </div>
     </div>
-</EditForm>
+</div>
+
+
 
 @code {
     AutenticacaoInput auth = new AutenticacaoInput();
@@ -36,7 +54,7 @@
 
     private async Task Logar()
     {
-        if (ValidarForm())
+        if (await ValidarForm())
         {
             var usuario = await usuarioService.AuthenticateAsync(auth.Email, auth.Senha);
             if (usuario != null)
@@ -53,7 +71,12 @@
         }
     }
 
-    private bool ValidarForm()
+    private void IrParaCadastro()
+    {
+        navegacao.NavigateTo("/cadastroUsuario/novo", true);
+    }
+
+    private async Task<bool> ValidarForm()
     {
         List<string> erros = new List<string>();
 
@@ -69,6 +92,14 @@
 
         if (erros.Count > 0)
         {
+            await Swal.FireAsync(new SweetAlertOptions
+                {
+                    Title = "Erro",
+                    Text = $"Erros: \r\n {string.Join(" \r\n ", erros)}!",
+                    Icon = SweetAlertIcon.Error,
+                    ConfirmButtonText = "Tentar novamente!",
+                });
+
             return false;
         }
 

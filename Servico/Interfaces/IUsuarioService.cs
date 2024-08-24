@@ -6,6 +6,7 @@ namespace FitnessDiary.Servico.Implementacoes
     {
         Task<List<Usuario>> GetUsuarioAsync();
         Task<Usuario> GetUsuarioByIdAsync(int usuarioId);
+        Task<Usuario> GetUsuarioByEmailAsync(string email);
         Task AddUsuarioAsync(Usuario usuario);
         Task UpdateUsuarioAsync(Usuario usuario);
         Task DeleteUsuarioAsync(Usuario usuario);

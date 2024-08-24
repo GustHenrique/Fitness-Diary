@@ -9,11 +9,7 @@ namespace FitnessDiary.Entidades
 
         [Required]
         [StringLength(256)]
-        public string PrimeiroNome { get; set; } 
-
-        [Required]
-        [StringLength(256)]
-        public string NomeDoMeio { get; set; }
+        public string Nome { get; set; } 
 
         [Required]
         [StringLength(256)]
@@ -24,17 +20,11 @@ namespace FitnessDiary.Entidades
         public string Senha { get; set; }
 
         [Required]
-        public DateTime DtaNascimento { get; set; }
+        public DateTime DtaNascimento { get; set; } = DateTime.Now;
 
         public double? Peso { get; set; }
 
         public double? Altura { get; set; }
-
-        [StringLength(500)]
-        public string? PathImagem { get; set; }
-
-        [StringLength(500)]
-        public string? NomeImagem { get; set; }
 
     }
 }

@@ -1,92 +1,77 @@
 ﻿@inherits LayoutComponentBase
+
 <!DOCTYPE html>
-<html lang="pt-br">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
-    <style>
-        .brand {
-            color: #9A0100;
-        }
+    <!-- Basic -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- Mobile Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <!-- Site Metas -->
+    <meta name="Usuarios" content="" />
+    <meta name="Treinos" content="" />
+    <meta name="Treinador" content="" />
 
-        .sign-container {
-            max-width: 700px;
-        }
+    <title>FitnessDiary</title>
 
-        .icon-height {
-            height: 24px;
-            width: 24px;
-        }
+    <!-- slider stylesheet -->
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
 
-        .right-box {
-            background: linear-gradient(#f8cfde, #9A0100);
-        }
+    <!-- bootstrap core css -->
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
 
-        .inputbox {
-            border: 1px solid #cfcece;
-            outline: none;
-        }
-
-            .inputbox:focus {
-                border: 2px solid #9A0100;
-            }
-
-        .input-label {
-            top: -12px;
-            left: 3%;
-        }
-
-        .sign-up {
-            background: #9A0100;
-            color: #fff;
-        }
-
-            .sign-up:hover {
-                background: #fff;
-                color: #9A0100;
-                border: 1px solid #9A0100;
-            }
-
-        .signin-border {
-            width: 60px;
-            border: 2px solid #9A0100;
-        }
-    </style>
+    <!-- fonts style -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,600,700&display=swap" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="css/style.css" rel="stylesheet" />
+    <!-- responsive style -->
+    <link href="css/responsive.css" rel="stylesheet" />
 </head>
 
 <body>
-    <section class="container-fluid ">
-        <div class="row vh-100">
-            <div class="col-md-7 col-12">
-                <div class="fw-medium p-2"></div>
-                <div class="px-4 sign-container mx-auto">
-                    <div class="text-center mt-5">
-                        <h2 class="fw-bold brand fs-1 my-4">Entrar na sua conta</h2>
-                        <div class="mb-2 mx-auto signin-border"></div>
-
-                        <div class="pt-4"></div>
-                        @Body
-
-                        <div class="p-3 mt-3">
-                            @* <a class="text-decoration-none text-reset" href="#">Política de Privacidade</a>
-                            . <a class="text-decoration-none text-reset" href="#">Termos e condições</a> *@
+    <div class="hero_area">
+        <!-- Barra de navegação no topo da tela -->
+        <header class="header_section">
+            <div class="container-fluid">
+                <nav class="navbar navbar-expand-lg custom_nav-container ">
+                    <a class="navbar-brand" href="Entrada.html">
+                        <span>
+                            FitnessDiary
+                        </span>
+                    </a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <!-- Voltar e modificar caso necessário pra enviar para as páginas certas-->
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <div class="d-flex ml-auto flex-column flex-lg-row align-items-center">
+                            <ul class="navbar-nav">
+                                <li class="nav-item">
+                                    <FitnessDiary.Components.Pages.ButtonLinkReload Path="/" LinkText="logar" />
+                                </li>
+                                <li class="nav-item">
+                                    <FitnessDiary.Components.Pages.ButtonLinkReload Path="/cadastroUsuario/novo" LinkText="Cadastrar" />
+                                </li>
+                            </ul>
                         </div>
                     </div>
-                </div>
+                </nav>
             </div>
-            <div class="col-md-5 col-12 right-box d-flex">
-                <div class="text-white text-center m-auto m-5 p-5">
-                    <h2 class="fw-bolder fs-1 my-4">Bem vindo ao FitnessDiary!</h2>
-                    <div class="signin-border border border-2 border-white mx-auto"></div>
-                    <p class="fs-5 my-4">Preencha suas informações pessoais e comece sua jornada conosco.</p>
-                    @*<button class="btn fw-bold btn-lg border-white rounded-5 px-5 fs-6 text-white">Sign Up</button>*@
-                </div>
-            </div>
-        </div>
-    </section>
+        </header>
+        <!-- end header section -->
+        <!-- slider section -->
+        <section class="slider_section position-relative">
+            @Body
+        </section>
+        <!-- end slider section -->
+    </div>
+
+
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/bootstrap.js"></script>
 
 </body>
+
 </html>

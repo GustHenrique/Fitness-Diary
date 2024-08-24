@@ -2,12 +2,23 @@
 @inject NavigationManager navegacao
 @inject ILocalStorageService localStorage
 
+<Loading IsLoading="isLoading" />
+
 <a class="nav-link" href="javascript:void(0)" @onclick="logout"> Sair</a>
 
 @code {
-    public void logout()
+    private bool isLoading = false;
+
+    public async void logout()
     {
+        isLoading = true;
+        StateHasChanged(); 
+
+        await Task.Delay(1000); 
         localStorage.ClearAsync();
         navegacao.NavigateTo("/");
+
+        isLoading = false;
+        StateHasChanged(); 
     }
 }

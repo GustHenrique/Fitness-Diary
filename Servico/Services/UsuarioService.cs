@@ -18,6 +18,13 @@ namespace FitnessDiary.Servico.Implementacoes
             return await _context.Usuarios.FindAsync(produtoId);
         }
 
+        public async Task<Usuario?> GetUsuarioByEmailAsync(string email)
+        {
+            return await _context.Usuarios
+                                 .Where(t => t.Email == email)
+                                 .FirstOrDefaultAsync(); 
+        }
+
         public async Task<List<Usuario>> GetUsuarioAsync()
         {
             return await _context.Usuarios.ToListAsync();

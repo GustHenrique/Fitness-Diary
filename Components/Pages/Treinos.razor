@@ -5,6 +5,9 @@
 @inject ILocalStorageService localStorage
 @rendermode InteractiveServer
 
+
+<Loading IsLoading="isLoading" />
+
 <div class="container">
     <div class="heading_container">
         <h2>Meus Treinos</h2>
@@ -28,8 +31,8 @@
                                     <small>Duração: @treino.Duracao minutos</small> <br />
                                     <small>Calorias Queimadas: @CalcularCaloriasTotais(treino) Calorias</small>
                                 </div>
-                                <div>
-                                    <button class="btn btn-link" @onclick="() => ToggleExercicios(treino.IdTreino)">
+                                <div class="d-flex align-items-center">
+                                    <button class="btn btn-link d-flex align-items-center" @onclick="() => ToggleExercicios(treino.IdTreino)">
                                         @if (exibirExercicios.ContainsKey(treino.IdTreino) && exibirExercicios[treino.IdTreino])
                                         {
                                             <span>Esconder Exercícios</span>
@@ -39,12 +42,12 @@
                                             <span>Mostrar Exercícios</span>
                                         }
                                     </button>
-                                    <div>
-                                        <i class="fas fa-pen-to-square text-primary" @onclick="() => EditarTreino(treino)" />
-                                    </div>
+                                    <button class="btn btn-link d-flex align-items-center" @onclick="() => EditarTreino(treino)">
+                                        <span class="ms-2">Editar</span>
+                                    </button>
                                 </div>
-
                             </div>
+
 
                             @if (exibirExercicios.ContainsKey(treino.IdTreino) && exibirExercicios[treino.IdTreino])
                             {
@@ -82,13 +85,19 @@
     public int IdUsuario { get; set; }
     private List<Treino> treinos = new List<Treino>();
     private Dictionary<int, bool> exibirExercicios = new Dictionary<int, bool>();
+    private bool isLoading = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
+            isLoading = true;
+            StateHasChanged();
+
             IdUsuario = await localStorage.GetItemAsync<int>("IdUsuario");
             treinos = await ObterTreinos();
+
+            isLoading = false;
             StateHasChanged();
         }
     }
