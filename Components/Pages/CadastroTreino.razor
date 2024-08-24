@@ -2,6 +2,7 @@
 @page "/cadastroTreino/novo"
 @inject ICategoriaExercicioService categoriaExercicioService
 @inject ITreinoService treinoService
+@inject IExercicioService exercicioService
 @inject NavigationManager navegacao
 @inject ILocalStorageService localStorage
 @rendermode InteractiveServer
@@ -228,7 +229,7 @@
                     </div>
                 </EditForm>
 
-                <AdicionarExercicioModal Visible="isModalVisible" NovoExercicio="novoExercicio" OnClose="CancelarExercicio" OnSave="SalvarExercicio" />
+                <AdicionarExercicioModal Visible="isModalVisible" NovoExercicio="novoExercicio" Treino="novoTreino" OnClose="CancelarExercicio" OnSave="SalvarExercicio" />
             </div>
         </div>
     </div>
@@ -245,10 +246,19 @@
     protected override async Task OnInitializedAsync()
     {
         categorias = await ObterCategorias();
+    }
 
-        if (IdTreino > 0)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
         {
-            novoTreino = await ObterTreinoPorId(IdTreino); // Carregar o treino existente
+            if (IdTreino > 0)
+            {
+                novoTreino = await ObterTreinoPorId(IdTreino);
+                novoTreino.Exercicios = await ObterExerciciosPorTreinoId(IdTreino);
+            }
+
+            StateHasChanged();
         }
     }
 
@@ -267,13 +277,25 @@
     {
         if (novoExercicio != null)
         {
-            if (novoTreino.Exercicios.All(e => e.IdTreino != novoExercicio.IdTreino)) // Checar se já não está adicionado
+            var exercicioExistente = novoTreino.Exercicios
+                .FirstOrDefault(e => e.IdExercicio == novoExercicio.IdExercicio);
+
+            if (novoExercicio.IdExercicio == 0)
+            {
+                novoTreino.Exercicios.Add(novoExercicio);
+            }
+            else if (exercicioExistente != null)
+            {
+                exercicioExistente = novoExercicio;
+            }
+            else
             {
                 novoTreino.Exercicios.Add(novoExercicio);
             }
         }
         FecharModal();
     }
+
 
     private void CancelarExercicio()
     {
@@ -291,12 +313,10 @@
         novoTreino.IdUsuario = await localStorage.GetItemAsync<int>("IdUsuario");
         if (IdTreino > 0)
         {
-            // Atualizar treino existente
             await treinoService.UpdateTreinoAsync(novoTreino);
         }
         else
         {
-            // Criar novo treino
             await treinoService.AddTreinoAsync(novoTreino);
         }
 
@@ -308,15 +328,13 @@
         return await categoriaExercicioService.GetCategoriaExercicioAsync();
     }
 
-    private Task<Treino> ObterTreinoPorId(int id)
+    private async Task<Treino> ObterTreinoPorId(int id)
     {
-        // Implementar lógica para obter o treino pelo ID
-        // Exemplo: return treinoService.ObterTreinoPorId(id);
-        return Task.FromResult(new Treino { IdTreino = id, Nome = "Treino Exemplo", Duracao = "30", Exercicios = new List<Exercicio>() });
+        return await treinoService.GetTreinoByIdAsync(id);
     }
 
-    private void OnModalClosed()
+    private async Task<List<Exercicio>> ObterExerciciosPorTreinoId(int id)
     {
-        // Optional: Add logic to execute when modal is closed
+        return await exercicioService.GetExerciciosByTreinoIdAsync(id);
     }
 }

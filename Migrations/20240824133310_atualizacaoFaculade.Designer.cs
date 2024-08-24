@@ -4,6 +4,7 @@ using FitnessDiary.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitnessDiary.Migrations
 {
     [DbContext(typeof(SQLServerContext))]
-    partial class SQLServerContextModelSnapshot : ModelSnapshot
+    [Migration("20240824133310_atualizacaoFaculade")]
+    partial class atualizacaoFaculade
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,8 +25,6 @@ namespace FitnessDiary.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-<<<<<<< HEAD
-=======
             modelBuilder.Entity("FitnessDiary.Entidades.CategoriaExercicio", b =>
                 {
                     b.Property<int>("IdCategoria")
@@ -221,7 +222,6 @@ namespace FitnessDiary.Migrations
                     b.ToTable("Treinos");
                 });
 
->>>>>>> Gustavo
             modelBuilder.Entity("FitnessDiary.Entidades.Usuario", b =>
                 {
                     b.Property<int>("IdUsuario")
@@ -269,7 +269,60 @@ namespace FitnessDiary.Migrations
 
                     b.HasKey("IdUsuario");
 
-                    b.ToTable("Usuario");
+                    b.ToTable("Usuarios");
+                });
+
+            modelBuilder.Entity("FitnessDiary.Entidades.Exercicio", b =>
+                {
+                    b.HasOne("FitnessDiary.Entidades.GrupoMuscular", "GrupoMuscular")
+                        .WithMany("Exercicios")
+                        .HasForeignKey("IdGrupoMuscular")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FitnessDiary.Entidades.Treino", "Treino")
+                        .WithMany("Exercicios")
+                        .HasForeignKey("IdTreino")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GrupoMuscular");
+
+                    b.Navigation("Treino");
+                });
+
+            modelBuilder.Entity("FitnessDiary.Entidades.Treino", b =>
+                {
+                    b.HasOne("FitnessDiary.Entidades.CategoriaExercicio", "Categoria")
+                        .WithMany("Treinos")
+                        .HasForeignKey("IdCategoria")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FitnessDiary.Entidades.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("IdUsuario")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Categoria");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("FitnessDiary.Entidades.CategoriaExercicio", b =>
+                {
+                    b.Navigation("Treinos");
+                });
+
+            modelBuilder.Entity("FitnessDiary.Entidades.GrupoMuscular", b =>
+                {
+                    b.Navigation("Exercicios");
+                });
+
+            modelBuilder.Entity("FitnessDiary.Entidades.Treino", b =>
+                {
+                    b.Navigation("Exercicios");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,86 +1,102 @@
 ﻿@page "/perfil"
-@inject IUsuarioService clienteService
-@inject NavigationManager navegacao
+@inject IUsuarioService usuarioService
+@inject ILocalStorageService localStorage
 @rendermode InteractiveServer
 
-
-
-
-<div class="container">
-    <div class="heading_container">
-        <h2>
-            Nossos Treinadores
-        </h2>
+<div class="container mt-4">
+    <div class="heading_container mb-4">
+        <h2>Perfil do Usuário</h2>
     </div>
     <div class="row">
-        <div class="col-lg-4 col-md-6 mx-auto">
-            <div class="box">
-                <div class="name">
-                    <h5>
-                        Fulano 1
-                    </h5>
-                </div>
-                <div class="img-box">
-                    <img src="images/t1.jpg" alt="">
-                </div>
-                <div class="social_box">
-                    <a href="">
-                        <img src="images/facebook-logo.png" alt="">
-                    </a>
-                    <a href="">
-                        <img src="images/twitter.png" alt="">
-                    </a>
-                    <a href="">
-                        <img src="images/instagram-logo.png" alt="">
-                    </a>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4 col-md-6 mx-auto">
-            <div class="box">
-                <div class="name">
-                    <h5>
-                        Fulano 2
-                    </h5>
-                </div>
-                <div class="img-box">
-                    <img src="images/t2.jpg" alt="">
-                </div>
-                <div class="social_box">
-                    <a href="">
-                        <img src="images/facebook-logo.png" alt="">
-                    </a>
-                    <a href="">
-                        <img src="images/twitter.png" alt="">
-                    </a>
-                    <a href="">
-                        <img src="images/instagram-logo.png" alt="">
-                    </a>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4 col-md-6 mx-auto">
-            <div class="box">
-                <div class="name">
-                    <h5>
-                        Fulano 3
-                    </h5>
-                </div>
-                <div class="img-box">
-                    <img src="images/t3.jpg" alt="">
-                </div>
-                <div class="social_box">
-                    <a href="">
-                        <img src="images/facebook-logo.png" alt="">
-                    </a>
-                    <a href="">
-                        <img src="images/twitter.png" alt="">
-                    </a>
-                    <a href="">
-                        <img src="images/instagram-logo.png" alt="">
-                    </a>
-                </div>
-            </div>
+        <div class="col-md-6 offset-md-3">
+            @if (usuario.IdUsuario == 0)
+            {
+                <p class="text-center">Carregando...</p>
+            }
+            else
+            {
+                <EditForm Model="@usuario" OnValidSubmit="@Salvar" class="form">
+                    <div class="form-group text-center mb-4">
+                        <label>Foto de Perfil:</label>
+                        @if (string.IsNullOrEmpty(usuario.PathImagem))
+                        {
+                            <p>Nenhuma imagem disponível.</p>
+                        }
+                        else
+                        {
+                            <img src="@usuario.PathImagem" alt="Foto de Perfil" class="img-thumbnail" style="width: 150px; height: 150px;" />
+                        }
+                    </div>
+
+                    <div class="form-group">
+                        <label for="primeiroNome">Primeiro Nome:</label>
+                        <InputText id="primeiroNome" @bind-Value="usuario.PrimeiroNome" class="form-control" Disabled="@isReadonly" />
+                    </div>
+                    <div class="form-group">
+                        <label for="nomeDoMeio">Nome do Meio:</label>
+                        <InputText id="nomeDoMeio" @bind-Value="usuario.NomeDoMeio" class="form-control" Disabled="@isReadonly" />
+                    </div>
+                    <div class="form-group">
+                        <label for="peso">Peso:</label>
+                        <InputNumber id="peso" @bind-Value="usuario.Peso" class="form-control" Disabled="@isReadonly" />
+                    </div>
+                    <div class="form-group">
+                        <label for="altura">Altura:</label>
+                        <InputNumber id="altura" @bind-Value="usuario.Altura" class="form-control" Disabled="@isReadonly" />
+                    </div>
+
+                    <div class="form-group text-center">
+                        @if (isReadonly)
+                        {
+                            <button type="button" class="btn btn-primary" @onclick="Editar">Editar</button>
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn btn-primary">Salvar</button>
+                            <button type="button" class="btn btn-danger ml-2" @onclick="Cancelar">Cancelar</button>
+                        }
+                    </div>
+                </EditForm>
+            }
         </div>
     </div>
 </div>
+
+@code {
+    public int IdUsuario;
+    private Usuario usuario = new Usuario();
+    private bool isReadonly = true;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            IdUsuario = await localStorage.GetItemAsync<int>("IdUsuario");
+            GetUsuario();
+            StateHasChanged();
+        }
+    }
+
+    private async void GetUsuario()
+    {
+        usuario = await usuarioService.GetUsuarioByIdAsync(IdUsuario);
+    }
+
+    private async void Editar()
+    {
+        isReadonly = false;
+    }
+
+    private async Task Salvar()
+    {
+        await usuarioService.UpdateUsuarioAsync(usuario);
+        GetUsuario();
+        isReadonly = true;
+    }
+
+    private void Cancelar()
+    {
+        GetUsuario();
+        isReadonly = true;
+    }
+}

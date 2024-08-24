@@ -11,12 +11,17 @@
 
     <div class="form-group">
         <label for="Repeticoes">Repetições</label>
-        <InputText id="Repeticoes" class="form-control" @bind-Value="NovoExercicio.Repeticoes" />
+        <InputNumber id="Repeticoes" class="form-control" @bind-Value="NovoExercicio.Repeticoes" />
     </div>
 
     <div class="form-group">
-        <label for="CaloriasQueimadasPorRepeticao">Calorias Queimadas Por Repetição</label>
-        <InputNumber id="CaloriasQueimadasPorRepeticao" class="form-control" @bind-Value="NovoExercicio.CaloriasQueimadasPorRepeticao" />
+        <label for="Repeticoes">Quantidade de series</label>
+        <InputNumber id="Repeticoes" class="form-control" @bind-Value="NovoExercicio.Series" />
+    </div>
+
+    <div class="form-group">
+        <label for="CaloriasQueimadasPorSeries">Calorias Queimadas Por Repetição</label>
+        <InputNumber id="CaloriasQueimadasPorSeries" class="form-control" @bind-Value="NovoExercicio.CaloriasQueimadasPorSeries" />
     </div>
 
     <div class="form-group">
@@ -46,6 +51,8 @@
     [Parameter] public EventCallback OnClose { get; set; }
     [Parameter] public EventCallback OnSave { get; set; }
     [Parameter] public bool Visible { get; set; }
+    [Parameter] public Treino Treino { get; set; }
+
 
 
     private bool isVisible = true;
@@ -68,6 +75,10 @@
     private void SalvarExercicio()
     {
         isVisible = false;
+        if (NovoExercicio.IdExercicio == 0)
+        {
+            NovoExercicio.IdExercicio = Treino.Exercicios.Count() + 1;
+        }
         OnSave.InvokeAsync();
     }
 

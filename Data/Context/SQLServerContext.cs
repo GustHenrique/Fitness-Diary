@@ -10,6 +10,9 @@ namespace FitnessDiary.Data.Context
         }
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<CategoriaExercicio> CategoriaExercicios { get; set; }
+        public DbSet<Exercicio> Exercicios { get; set; }
+        public DbSet<Treino> Treinos { get; set; }
+        public DbSet<GrupoMuscular> GruposMusculares { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -40,8 +43,5 @@ namespace FitnessDiary.Data.Context
 
             base.OnModelCreating(modelBuilder);
         }
-        public DbSet<Exercicio> Exercicios { get; set; }
-        public DbSet<Treino> Treinos { get; set; }
-        public DbSet<GrupoMuscular> GruposMusculares { get; set; }
     }
 }

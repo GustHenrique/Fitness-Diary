@@ -8,15 +8,27 @@ namespace FitnessDiary.Servico.Implementacoes
     public class TreinoService : ITreinoService
     {
         private readonly SQLServerContext _context;
+        private IExercicioService _exercicioService;
+        private IUsuarioService _usuarioService;
 
-        public TreinoService(SQLServerContext context)
+        public TreinoService(SQLServerContext context, IExercicioService exercicioService, IUsuarioService usuarioService)
         {
             _context = context;
+            _exercicioService = exercicioService;
+            _usuarioService = usuarioService;
         }
 
         public async Task<Treino> GetTreinoByIdAsync(int treinoId)
         {
             return await _context.Treinos.FindAsync(treinoId);
+        }
+
+
+        public async Task<List<Treino>> GetTreinosByUsuarioIdAsync(int usuarioId)
+        {
+            return await _context.Treinos
+                                 .Where(t => t.IdUsuario == usuarioId)
+                                 .ToListAsync();
         }
 
         public async Task<List<Treino>> GetTreinoAsync()
@@ -28,9 +40,14 @@ namespace FitnessDiary.Servico.Implementacoes
             var usuario = await _context.Usuarios.FindAsync(treino.IdUsuario);
             var categoria = await _context.CategoriaExercicios.FindAsync(treino.IdCategoria);
 
+            foreach (var exercicio in treino.Exercicios)
+            {
+                exercicio.IdExercicio = 0;
+                exercicio.GrupoMuscular = await _context.GruposMusculares.FindAsync(exercicio.IdGrupoMuscular);
+            }
+
             if (usuario == null || categoria == null)
             {
-                // Trate o caso onde o usuário ou a categoria não existem
                 throw new InvalidOperationException("Usuário ou categoria não encontrado.");
             }
 

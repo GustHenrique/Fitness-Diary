@@ -12,23 +12,13 @@ namespace FitnessDiary.Entidades
         [StringLength(256)]
         public string Nome { get; set; }
 
-        [Required]
-        [StringLength(100)]
-        public string Repeticoes { get; set; }
-
-        [Required]
-        [StringLength(100)]
-        public string Series { get; set; }
-
+        public int Repeticoes { get; set; }
+        public int Series { get; set; }
         public double Peso { get; set; }
-        public double CaloriasQueimadasPorRepeticao { get; set; }
-
-        // Relação com a classe Treino
+        public double CaloriasQueimadasPorSeries { get; set; }
         public int IdTreino { get; set; }
         [ForeignKey("IdTreino")]
         public Treino Treino { get; set; }
-
-        // Relação com a classe GrupoMuscular
         public int IdGrupoMuscular { get; set; }
         [ForeignKey("IdGrupoMuscular")]
         public GrupoMuscular GrupoMuscular { get; set; }

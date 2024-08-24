@@ -4,147 +4,83 @@
 @rendermode InteractiveServer
 
 
-
 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-    <div class="carousel-inner">
-        <div class="carousel-item active">
-            <div class="container">
-                <div class="col-lg-10 col-md-11 mx-auto">
-                    <div class="detail-box">
-                        <div>
-                            <h1>
-                                Fitness Diary
-                            </h1>
-                            <p>
-                                É possível melhorar a sua saúde a partir dos hábitos que você inclui em sua rotina. A alimentação pode reforçar a imunidade, diminuindo a frequência com que uma pessoa fica doente ou suavizando a intensidade e duração dos sintomas.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="carousel-item">
-            <div class="container">
-                <div class="col-lg-10 col-md-11 mx-auto">
-                    <div class="detail-box">
-                        <div>
-                            <h1>
-                                Qualidade do Sono
-                            </h1>
-                            <p>
-                                Dormir bem é também uma questão de hábito, por isso, tente deitar para dormir sempre que possível no mesmo horário. Isso ajuda o seu cérebro a desligar das preocupações e relaxar com mais facilidade no fim do dia.
-                                Essa dica também ajuda quem tem insônia ou dificuldade para dormir. No começo não será fácil, mas aos poucos você vai se acostumando. Vale lembrar que uma boa noite de sono contribui bastante para aumentar a imunidade.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="carousel-item">
-            <div class="container">
-                <div class="col-lg-10 col-md-11 mx-auto">
-                    <div class="detail-box">
-                        <div>
-                            <h1>
-                                Planeje suas refeições
-                            </h1>
-                            <p>
-                                Comer bem é essencial para vivermos com saúde e elevarmos a imunidade. Para diminuir o tempo perdido durante a rotina diária enquanto pensa no que irá comer, uma boa ideia é planejar as refeições da semana de uma vez só.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="carousel-item">
-            <div class="container">
-                <div class="col-lg-10 col-md-11 mx-auto">
-                    <div class="detail-box">
-                        <div>
-                            <h1>
-                                Pratique atividades físicas regulares
-                            </h1>
-                            <p>
-                                É comprovado que atividades físicas melhoram a auto-estima, sensação de bem-estar e a imunidade, sem mencionar o ganho de condicionamento físico. Mesmo que uma simples caminhada, ioga ou treinos funcionais em casa, fuja do sedentarismo para melhorar sua qualidade de vida.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only">Anterior</span>
-        </a>
-        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only">Próximo</span>
-        </a>
-    </div>
     <ol class="carousel-indicators">
-        <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-        <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-        <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-        <li data-target="#carouselExampleIndicators" data-slide-to="3"></li>
+        @for (int i = 0; i < Items.Count; i++)
+        {
+            <li @onclick="() => GoToSlide(i)" class="@((i == currentIndex) ? "active" : "")"></li>
+        }
     </ol>
+    <div class="carousel-inner">
+        @for (int i = 0; i < Items.Count; i++)
+        {
+            <div class="carousel-item @(i == currentIndex ? "active" : "")">
+                <div class="container">
+                    <div class="col-lg-10 col-md-11 mx-auto">
+                        <div class="detail-box">
+                            <div>
+                                <h1>@Items[i].Title</h1>
+                                <p>@Items[i].Description</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <a @onclick="PreviousSlide" class="carousel-control-prev" role="button">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Anterior</span>
+    </a>
+    <a @onclick="NextSlide" class="carousel-control-next" role="button">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Próximo</span>
+    </a>
 </div>
 
-@* <h3>ListaUsuario</h3>
-
-@if (clientes == null)
-{
-    <p>Carregando ....</p>
-}
-
-else
-{
-    <button class="btn btn-success" @onclick="AdicionarUsuario"> Adicionar Novo Usuario</button>
-    <table class="table">
-
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nome</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var cliente in clientes)
-            {
-                <tr>
-                    <td>@cliente.IdUsuario</td>
-                    <td>@cliente.PrimeiroNome</td>
-                    <td>
-                        <button class="btn btn-primary" @onclick="()=>AtualizarUsuario(cliente.IdUsuario)">Editar</button>
-                        <button class="btn btn-danger" @onclick="()=>ExcluirUsuario(cliente)">Excluir</button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-
 @code {
-    private List<Usuario> clientes;
+    private int currentIndex = 0;
 
-    protected override async Task OnInitializedAsync()
+    private List<CarouselItem> Items = new List<CarouselItem>
     {
-       // clientes = await clienteService.GetUsuarioAsync();
-    }
-    private void AdicionarUsuario()
-    {
-        navegacao.NavigateTo("/cadastroUsuario/novo");
-    }
-    private void AtualizarUsuario(int clienteId)
-    {
-        navegacao.NavigateTo($"/cadastroUsuario/editar/{clienteId}");
-    }
-    private async Task ExcluirUsuario(Usuario cliente)
-    {
-        //await clienteService.DeleteUsuarioAsync(cliente);
-       // clientes = await clienteService.GetUsuarioAsync();
+        new CarouselItem { Title = "Fitness Diary", Description = "É possível melhorar a sua saúde a partir dos hábitos que você inclui em sua rotina. A alimentação pode reforçar a imunidade, diminuindo a frequência com que uma pessoa fica doente ou suavizando a intensidade e duração dos sintomas." },
+        new CarouselItem { Title = "Qualidade do Sono", Description = "Dormir bem é também uma questão de hábito, por isso, tente deitar para dormir sempre que possível no mesmo horário. Isso ajuda o seu cérebro a desligar das preocupações e relaxar com mais facilidade no fim do dia." },
+        new CarouselItem { Title = "Planeje suas refeições", Description = "Comer bem é essencial para vivermos com saúde e elevarmos a imunidade. Para diminuir o tempo perdido durante a rotina diária enquanto pensa no que irá comer, uma boa ideia é planejar as refeições da semana de uma vez só." },
+        new CarouselItem { Title = "Pratique atividades físicas regulares", Description = "É comprovado que atividades físicas melhoram a auto-estima, sensação de bem-estar e a imunidade, sem mencionar o ganho de condicionamento físico. Mesmo que uma simples caminhada, ioga ou treinos funcionais em casa, fuja do sedentarismo para melhorar sua qualidade de vida." }
+    };
 
+    private void PreviousSlide()
+    {
+        if (currentIndex > 0)
+        {
+            currentIndex--;
+        }
+        else
+        {
+            currentIndex = Items.Count - 1;
+        }
     }
 
+    private void NextSlide()
+    {
+        if (currentIndex < Items.Count - 1)
+        {
+            currentIndex++;
+        }
+        else
+        {
+            currentIndex = 0;
+        }
+    }
+
+    private void GoToSlide(int index)
+    {
+        currentIndex = index;
+    }
+
+    public class CarouselItem
+    {
+        public string Title { get; set; }
+        public string Description { get; set; }
+    }
 }
- *@
