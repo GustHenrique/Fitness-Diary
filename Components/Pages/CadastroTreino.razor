@@ -260,7 +260,7 @@
         {
             if (await localStorage.GetItemAsync<int>("IdUsuario") == null || await localStorage.GetItemAsync<int>("IdUsuario") == 0)
             {
-                navegacao.NavigateTo($"/");
+                navegacao.NavigateTo($"/", true);
             }
 
             if (IdTreino > 0)
@@ -268,7 +268,6 @@
                 novoTreino = await ObterTreinoPorId(IdTreino);
                 novoTreino.Exercicios = await ObterExerciciosPorTreinoId(IdTreino);
             }
-
             StateHasChanged();
         }
     }
@@ -345,7 +344,7 @@
 
             if (result.IsConfirmed)
             {
-                navegacao.NavigateTo("/treinos");
+                navegacao.NavigateTo("/treinos", true);
             }
         }
     }
@@ -386,11 +385,26 @@
 
     private async Task<Treino> ObterTreinoPorId(int id)
     {
-        return await treinoService.GetTreinoByIdAsync(id);
+        isLoading = true;
+        StateHasChanged();
+
+        var treino = await treinoService.GetTreinoByIdAsync(id);
+
+        isLoading = false;
+        StateHasChanged();
+        return treino;
     }
 
     private async Task<List<Exercicio>> ObterExerciciosPorTreinoId(int id)
     {
-        return await exercicioService.GetExerciciosByTreinoIdAsync(id);
+        isLoading = true;
+        StateHasChanged();
+
+        var exercicios = await exercicioService.GetExerciciosByTreinoIdAsync(id);
+
+        isLoading = false;
+        StateHasChanged();
+
+        return exercicios;
     }
 }

@@ -97,7 +97,7 @@
         {
             if (await localStorage.GetItemAsync<int>("IdUsuario") == null || await localStorage.GetItemAsync<int>("IdUsuario") == 0)
             {
-                navegacao.NavigateTo($"/");
+                navegacao.NavigateTo($"/", true);
             }
 
             isLoading = true;
@@ -113,7 +113,7 @@
 
     private void EditarTreino(Treino treino)
     {
-        if (treino is not null)
+        if (treino != null)
         {
             navegacao.NavigateTo($"/cadastroTreino/editar/{treino.IdTreino}", true);
         }

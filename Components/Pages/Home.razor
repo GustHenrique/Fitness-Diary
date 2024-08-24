@@ -49,7 +49,7 @@
         {
             if (await localStorage.GetItemAsync<int>("IdUsuario") == null || await localStorage.GetItemAsync<int>("IdUsuario") == 0)
             {
-                navegacao.NavigateTo($"/");
+                navegacao.NavigateTo($"/", true);
             }
         }
     }
