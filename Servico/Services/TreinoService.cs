@@ -8,10 +8,14 @@ namespace FitnessDiary.Servico.Implementacoes
     public class TreinoService : ITreinoService
     {
         private readonly SQLServerContext _context;
+        private IExercicioService _exercicioService;
+        private IUsuarioService _usuarioService;
 
-        public TreinoService(SQLServerContext context)
+        public TreinoService(SQLServerContext context, IExercicioService exercicioService, IUsuarioService usuarioService)
         {
             _context = context;
+            _exercicioService = exercicioService;
+            _usuarioService = usuarioService;
         }
 
         public async Task<Treino> GetTreinoByIdAsync(int treinoId)
@@ -19,13 +23,13 @@ namespace FitnessDiary.Servico.Implementacoes
             return await _context.Treinos.FindAsync(treinoId);
         }
 
+
         public async Task<List<Treino>> GetTreinosByUsuarioIdAsync(int usuarioId)
         {
             return await _context.Treinos
                                  .Where(t => t.IdUsuario == usuarioId)
                                  .ToListAsync();
         }
-
 
         public async Task<List<Treino>> GetTreinoAsync()
         {

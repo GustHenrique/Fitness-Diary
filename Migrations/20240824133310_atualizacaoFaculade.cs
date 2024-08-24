@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace FitnessDiary.Migrations
 {
     /// <inheritdoc />
-    public partial class migracaoRemovendoCaloriasTreino : Migration
+    public partial class atualizacaoFaculade : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -66,7 +68,7 @@ namespace FitnessDiary.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IdUsuario = table.Column<int>(type: "int", nullable: false),
                     Nome = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    Duracao = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Duracao = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IdCategoria = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -93,10 +95,10 @@ namespace FitnessDiary.Migrations
                     IdExercicio = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nome = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    Repeticoes = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Series = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Repeticoes = table.Column<int>(type: "int", nullable: false),
+                    Series = table.Column<int>(type: "int", nullable: false),
                     Peso = table.Column<double>(type: "float", nullable: false),
-                    CaloriasQueimadasPorRepeticao = table.Column<double>(type: "float", nullable: false),
+                    CaloriasQueimadasPorSeries = table.Column<double>(type: "float", nullable: false),
                     IdTreino = table.Column<int>(type: "int", nullable: false),
                     IdGrupoMuscular = table.Column<int>(type: "int", nullable: false)
                 },
@@ -115,6 +117,37 @@ namespace FitnessDiary.Migrations
                         principalTable: "Treinos",
                         principalColumn: "IdTreino",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "CategoriaExercicios",
+                columns: new[] { "IdCategoria", "Nome" },
+                values: new object[,]
+                {
+                    { 1, "Força" },
+                    { 2, "Core e Abdominais" },
+                    { 3, "Exercícios com Peso Corporal" },
+                    { 4, "Exercícios de Resistência" },
+                    { 5, "Exercícios para Grupos Musculares Específicos" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "GruposMusculares",
+                columns: new[] { "IdGrupoMuscular", "Nome" },
+                values: new object[,]
+                {
+                    { 1, "Peitoral" },
+                    { 2, "Dorsal" },
+                    { 3, "Ombros" },
+                    { 4, "Bíceps" },
+                    { 5, "Tríceps" },
+                    { 6, "Quadríceps" },
+                    { 7, "Isquiotibiais" },
+                    { 8, "Glúteos" },
+                    { 9, "Panturrilhas" },
+                    { 10, "Abdômen" },
+                    { 11, "Lombar" },
+                    { 12, "Músculos do Core" }
                 });
 
             migrationBuilder.CreateIndex(

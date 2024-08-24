@@ -75,7 +75,7 @@ namespace FitnessDiary.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdExercicio"));
 
-                    b.Property<double>("CaloriasQueimadasPorRepeticao")
+                    b.Property<double>("CaloriasQueimadasPorSeries")
                         .HasColumnType("float");
 
                     b.Property<int>("IdGrupoMuscular")
@@ -92,15 +92,11 @@ namespace FitnessDiary.Migrations
                     b.Property<double>("Peso")
                         .HasColumnType("float");
 
-                    b.Property<string>("Repeticoes")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<int>("Repeticoes")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Series")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<int>("Series")
+                        .HasColumnType("int");
 
                     b.HasKey("IdExercicio");
 

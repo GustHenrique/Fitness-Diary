@@ -7,8 +7,7 @@ namespace FitnessDiary.Entidades
     {
         [Key]
         public int IdTreino { get; set; }
-
-        public int IdUsuario { get; set; }  // Adicionando a chave estrangeira explicitamente
+        public int IdUsuario { get; set; }
         [ForeignKey("IdUsuario")]
         public Usuario Usuario { get; set; }
 
@@ -18,14 +17,11 @@ namespace FitnessDiary.Entidades
 
         [Required]
         public string Duracao { get; set; }
-
-        // Relação com a classe Exercicio
-        public ICollection<Exercicio> Exercicios { get; set; }
-
-        // Relação com a classe Categoria
+        public ICollection<Exercicio> Exercicios { get; set; } = new List<Exercicio>();
         public int IdCategoria { get; set; }
         [ForeignKey("IdCategoria")]
         public CategoriaExercicio Categoria { get; set; }
     }
+
 
 }

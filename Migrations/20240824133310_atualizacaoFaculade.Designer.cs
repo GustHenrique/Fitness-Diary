@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitnessDiary.Migrations
 {
     [DbContext(typeof(SQLServerContext))]
-    [Migration("20240823030512_SeedMusculacaoCategoriaExercicio")]
-    partial class SeedMusculacaoCategoriaExercicio
+    [Migration("20240824133310_atualizacaoFaculade")]
+    partial class atualizacaoFaculade
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -78,7 +78,7 @@ namespace FitnessDiary.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdExercicio"));
 
-                    b.Property<double>("CaloriasQueimadasPorRepeticao")
+                    b.Property<double>("CaloriasQueimadasPorSeries")
                         .HasColumnType("float");
 
                     b.Property<int>("IdGrupoMuscular")
@@ -95,15 +95,11 @@ namespace FitnessDiary.Migrations
                     b.Property<double>("Peso")
                         .HasColumnType("float");
 
-                    b.Property<string>("Repeticoes")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<int>("Repeticoes")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Series")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<int>("Series")
+                        .HasColumnType("int");
 
                     b.HasKey("IdExercicio");
 
@@ -130,6 +126,68 @@ namespace FitnessDiary.Migrations
                     b.HasKey("IdGrupoMuscular");
 
                     b.ToTable("GruposMusculares");
+
+                    b.HasData(
+                        new
+                        {
+                            IdGrupoMuscular = 1,
+                            Nome = "Peitoral"
+                        },
+                        new
+                        {
+                            IdGrupoMuscular = 2,
+                            Nome = "Dorsal"
+                        },
+                        new
+                        {
+                            IdGrupoMuscular = 3,
+                            Nome = "Ombros"
+                        },
+                        new
+                        {
+                            IdGrupoMuscular = 4,
+                            Nome = "Bíceps"
+                        },
+                        new
+                        {
+                            IdGrupoMuscular = 5,
+                            Nome = "Tríceps"
+                        },
+                        new
+                        {
+                            IdGrupoMuscular = 6,
+                            Nome = "Quadríceps"
+                        },
+                        new
+                        {
+                            IdGrupoMuscular = 7,
+                            Nome = "Isquiotibiais"
+                        },
+                        new
+                        {
+                            IdGrupoMuscular = 8,
+                            Nome = "Glúteos"
+                        },
+                        new
+                        {
+                            IdGrupoMuscular = 9,
+                            Nome = "Panturrilhas"
+                        },
+                        new
+                        {
+                            IdGrupoMuscular = 10,
+                            Nome = "Abdômen"
+                        },
+                        new
+                        {
+                            IdGrupoMuscular = 11,
+                            Nome = "Lombar"
+                        },
+                        new
+                        {
+                            IdGrupoMuscular = 12,
+                            Nome = "Músculos do Core"
+                        });
                 });
 
             modelBuilder.Entity("FitnessDiary.Entidades.Treino", b =>

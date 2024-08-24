@@ -13,7 +13,7 @@
         <div class="container">
             @if (treinos == null || treinos.Count == 0)
             {
-                <p>Nenhum treino cadastrado.</p>
+                <p class="text-center">Nenhum treino cadastrado.</p>
             }
             else
             {
@@ -28,16 +28,22 @@
                                     <small>Duração: @treino.Duracao minutos</small> <br />
                                     <small>Calorias Queimadas: @CalcularCaloriasTotais(treino) Calorias</small>
                                 </div>
-                                <button class="btn btn-link" @onclick="() => ToggleExercicios(treino.IdTreino)">
-                                    @if (exibirExercicios.ContainsKey(treino.IdTreino) && exibirExercicios[treino.IdTreino])
-                                    {
-                                        <span>Esconder Exercícios</span>
-                                    }
-                                    else
-                                    {
-                                        <span>Mostrar Exercícios</span>
-                                    }
-                                </button>
+                                <div>
+                                    <button class="btn btn-link" @onclick="() => ToggleExercicios(treino.IdTreino)">
+                                        @if (exibirExercicios.ContainsKey(treino.IdTreino) && exibirExercicios[treino.IdTreino])
+                                        {
+                                            <span>Esconder Exercícios</span>
+                                        }
+                                        else
+                                        {
+                                            <span>Mostrar Exercícios</span>
+                                        }
+                                    </button>
+                                    <div>
+                                        <i class="fas fa-pen-to-square text-primary" @onclick="() => EditarTreino(treino)" />
+                                    </div>
+                                </div>
+
                             </div>
 
                             @if (exibirExercicios.ContainsKey(treino.IdTreino) && exibirExercicios[treino.IdTreino])
@@ -77,10 +83,22 @@
     private List<Treino> treinos = new List<Treino>();
     private Dictionary<int, bool> exibirExercicios = new Dictionary<int, bool>();
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        IdUsuario = await localStorage.GetItemAsync<int>("IdUsuario");
-        treinos = await ObterTreinos();
+        if (firstRender)
+        {
+            IdUsuario = await localStorage.GetItemAsync<int>("IdUsuario");
+            treinos = await ObterTreinos();
+            StateHasChanged();
+        }
+    }
+    
+    private void EditarTreino(Treino treino)
+    {
+        if (treino is not null)
+        {
+            navegacao.NavigateTo($"/cadastroTreino/editar/{treino.IdTreino}");
+        }
     }
 
     private void ToggleExercicios(int idTreino)
@@ -97,7 +115,7 @@
 
     private double CalcularCaloriasTotais(Treino treino)
     {
-        return treino.Exercicios?.Sum(e => e.CaloriasQueimadasPorRepeticao * e.Repeticoes) ?? 0;
+        return treino.Exercicios?.Sum(e => e.CaloriasQueimadasPorSeries * e.Series) ?? 0;
     }
 
     private async Task<List<Treino>> ObterTreinos()
