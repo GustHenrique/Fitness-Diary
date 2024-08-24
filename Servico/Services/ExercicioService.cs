@@ -13,14 +13,12 @@ namespace FitnessDiary.Servico.Implementacoes
             _context = context;
         }
 
-
         public async Task<List<Exercicio>> GetExerciciosByTreinoIdAsync(int treinoId)
         {
             return await _context.Exercicios
                                  .Where(t => t.IdTreino == treinoId)
                                  .ToListAsync();
         }
-
 
         public async Task<Exercicio> GetExercicioByIdAsync(int produtoId)
         {

@@ -7,6 +7,9 @@
 @inject SweetAlertService Swal
 @rendermode InteractiveServer
 
+
+<Loading IsLoading="isLoading" />
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-6 px-0">
@@ -50,23 +53,20 @@
 
 @code {
     AutenticacaoInput auth = new AutenticacaoInput();
-    private bool loginFailed = false;
+    private bool isLoading = false;
 
     private async Task Logar()
     {
+        isLoading = true;
+        StateHasChanged();
+
         if (await ValidarForm())
         {
             var usuario = await usuarioService.AuthenticateAsync(auth.Email, auth.Senha);
             if (usuario != null)
             {
                 await LocalStorage.SetItemAsync("IdUsuario", usuario.IdUsuario);
-                loginFailed = false;
                 navegacao.NavigateTo("/home");
-            }
-            else
-            {
-                // Falha na autenticação
-                loginFailed = true;
             }
         }
     }
