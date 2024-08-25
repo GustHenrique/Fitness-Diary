@@ -6,6 +6,7 @@ using CurrieTechnologies.Razor.SweetAlert2;
 using FitnessDiary.Components;
 using FitnessDiary.Data.Context;
 using FitnessDiary.Servico.Implementacoes;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +17,7 @@ builder.Services.AddDbContext<SQLServerContext>(options =>
 });
 
 builder.Services.AddSweetAlert2();
+builder.Services.AddSingleton<IEncryptionService, EncryptionService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<ITreinoService, TreinoService>();
 builder.Services.AddScoped<IGrupoMuscularService, GrupoMuscularService>();

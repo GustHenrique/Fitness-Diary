@@ -2,7 +2,7 @@
 @page "/"
 @layout AutenticaLayout
 @inject NavigationManager navegacao
-@inject ILocalStorageService LocalStorage
+@inject ILocalStorageService localStorage
 @inject IUsuarioService usuarioService
 @inject SweetAlertService Swal
 @rendermode InteractiveServer
@@ -49,6 +49,11 @@
     AutenticacaoInput auth = new AutenticacaoInput();
     private bool isLoading = false;
 
+    protected override void OnInitialized()
+    {
+        localStorage.ClearAsync();
+    }
+
     private async Task Logar()
     {
         isLoading = true;
@@ -59,10 +64,24 @@
             var usuario = await usuarioService.AuthenticateAsync(auth.Email, auth.Senha);
             if (usuario != null)
             {
-                await LocalStorage.SetItemAsync("IdUsuario", usuario.IdUsuario);
+                await localStorage.SetItemAsync("IdUsuario", usuario.IdUsuario);
                 navegacao.NavigateTo("/home");
             }
+            else
+            {
+                isLoading = false;
+                StateHasChanged();
+
+                await Swal.FireAsync(new SweetAlertOptions
+                    {
+                        Title = "Falha no login",
+                        Text = $"Email ou senha incorretos!",
+                        Icon = SweetAlertIcon.Error,
+                        ConfirmButtonText = "Tentar novamente!",
+                    });
+            }
         }
+
     }
 
     private void IrParaCadastro()

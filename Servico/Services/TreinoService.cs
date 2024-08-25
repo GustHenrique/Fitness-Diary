@@ -29,6 +29,7 @@ namespace FitnessDiary.Servico.Implementacoes
             return await _context.Treinos
                                  .Where(t => t.IdUsuario == usuarioId)
                                  .Include(e => e.Exercicios)
+                                   .ThenInclude(e => e.GrupoMuscular)
                                  .ToListAsync();
         }
 
