@@ -45,8 +45,9 @@
 
                     <div class="form-group">
                         <label for="GrupoMuscular" class="corTexto">Grupo Muscular</label>
+
                         <InputSelect id="GrupoMuscular" class="form-control" @bind-Value="NovoExercicio.IdGrupoMuscular">
-                            <option value="">Selecione...</option>
+                            <option value="0">Selecione...</option>
                             @foreach (var grupo in GruposMusculares)
                             {
                                 <option value="@grupo.IdGrupoMuscular">@grupo.Nome</option>
