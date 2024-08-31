@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <None Include="wwwroot\css\bootstrap.css" />
-    <None Include="wwwroot\css\responsive.css" />
     <None Include="wwwroot\css\style.css" />
     <None Include="wwwroot\css\style.css.map" />
     <None Include="wwwroot\css\style.scss" />
