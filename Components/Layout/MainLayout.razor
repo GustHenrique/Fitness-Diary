@@ -36,11 +36,8 @@
         <header class="header_section">
             <div class="container-fluid">
                 <nav class="navbar navbar-expand-lg custom_nav-container ">
-                    <a class="navbar-brand" href="Entrada.html">
-                        <span>
-                            FitnessDiary
-                        </span>
-                    </a>
+                    <FitnessDiary.Components.Pages.ButtonLinkReload Path="/home" LinkText="FitnessDiary" Class="navbar-brand text-white" />
+
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
@@ -49,16 +46,16 @@
                         <div class="d-flex ml-auto flex-column flex-lg-row align-items-center">
                             <ul class="navbar-nav  ">
                                 <li class="nav-item">
-                                    <FitnessDiary.Components.Pages.ButtonLinkReload Path="/home" LinkText="Principal" />
+                                    <FitnessDiary.Components.Pages.ButtonLinkReload Path="/home" LinkText="Principal" Class="nav-link" />
                                 </li>
                                 <li class="nav-item">
-                                    <FitnessDiary.Components.Pages.ButtonLinkReload Path="/cadastroTreino/novo" LinkText="Novo Treino" />
+                                    <FitnessDiary.Components.Pages.ButtonLinkReload Path="/cadastroTreino/novo" LinkText="Novo Treino" Class="nav-link" />
                                 </li>
                                 <li class="nav-item ">
-                                    <FitnessDiary.Components.Pages.ButtonLinkReload Path="/treinos" LinkText="Meus Treinos" />
+                                    <FitnessDiary.Components.Pages.ButtonLinkReload Path="/treinos" LinkText="Meus Treinos" Class="nav-link" />
                                 </li>
                                 <li class="nav-item">
-                                    <FitnessDiary.Components.Pages.ButtonLinkReload Path="/perfil" LinkText="Meu Perfil" />
+                                    <FitnessDiary.Components.Pages.ButtonLinkReload Path="/perfil" LinkText="Meu Perfil" Class="nav-link" />
                                 </li>
                                 <li class="nav-item">
                                     <FitnessDiary.Components.Pages.ButtonLogout/>

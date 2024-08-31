@@ -4,11 +4,12 @@
 
 <Loading IsLoading="isLoading" />
 
-<a class="nav-link" href="javascript:void(0)" @onclick="navigate"> @LinkText</a>
+<a class="@Class" href="javascript:void(0)" @onclick="navigate"> @LinkText</a>
 
 @code {
     [Parameter] public string Path { get; set; }
     [Parameter] public string LinkText { get; set; }
+    [Parameter] public string Class { get; set; }
     private bool isLoading = false;
 
     public async void navigate()
