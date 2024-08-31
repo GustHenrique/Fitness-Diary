@@ -48,7 +48,10 @@ namespace FitnessDiary.Servico.Implementacoes
 
         public async Task UpdateUsuarioAsync(Usuario produto)
         {
-            produto.Senha = _encryptionService.Encrypt(produto.Senha);
+            var usuarios = await _context.Usuarios.FindAsync(produto.IdUsuario);
+            if (usuarios.Senha != _encryptionService.Decrypt(produto.Senha))
+                produto.Senha = _encryptionService.Encrypt(produto.Senha);
+
             _context.Usuarios.Update(produto);
             await _context.SaveChangesAsync();
         }
